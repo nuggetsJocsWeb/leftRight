@@ -6,6 +6,7 @@ h1{
 	text-align: center;
 	color: #fad563;
 }
+
 #mainTitle{
 	color: #fff5d1;
 }
@@ -18,25 +19,29 @@ h1{
 }
 	
 button.center{
-  	width: 8rem;
+	width: 8rem;
 	height: 4rem;
 	margin-top: 1rem;
-  	cursor: pointer;
- 	background-color:#fff5d1;
+	cursor: pointer;
+	background-color: #fff5d1;
 	color: #1a475c;
-  	border-color: #8ebd9d;
-	border-width: 2rem;
-	border-radius: 2rem;
-  	font-size: 1rem;
+    
+	border: 3px solid #8ebd9d; 
+	border-radius: 1rem;
+    
+	font-size: 1rem;
+    
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 }
 
 button.center:hover{
 	background-color: #8ebd9d;
-  	border: transparent;
-	
+	border-color: transparent; 
 }
 
 button.center:active{
 	background-color: #8ebd9d;
-  	border-color: #fff5d1;
+	border-color: #fff5d1;
 }
