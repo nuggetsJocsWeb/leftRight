@@ -48,12 +48,40 @@ class EscenaMenu extends Phaser.Scene {
 
 
 }
+class EscenaJuego extends Phaser.Scene {
+    constructor(){
+        super({ key: 'EscenaJuego' });
+    }
+
+    preload(){
+
+    }
+
+    create(){
+
+    }
+}
+
+class EscenaRanquing extends Phaser.Scene {
+    constructor(){
+        super({ key: 'EscenaRanquing' });
+    }
+
+    preload(){
+
+    }
+    
+    create(){
+
+    }
+}
+
 const config = {
     type: Phaser.AUTO,
     width: 1200,
     height: 1200,
     backgroundColor: '#97a3a6',
-    scene: [EscenaMenu]
+    scene: [EscenaMenu, EscenaJuego, EscenaRanquing]
 };
 
 const game = new Phaser.Game(config);
