@@ -1,3 +1,5 @@
+import EscenaJuego from './EscenaJuego.js';
+
 class EscenaMenu extends Phaser.Scene {
     constructor() {
         super({ key: 'EscenaMenu' });
@@ -13,8 +15,8 @@ class EscenaMenu extends Phaser.Scene {
                 <h1 id="mainTitle">LEFT&RIGHT MENU</h1>
                 
                 <div id="contenidorBotons">
-                    <button class="center" id="btn-left">LEFT</button>
-                    <button class="center" id="btn-right">RIGHT</button>
+                    <button class="center" id="play-button">PLAY</button>
+                    <button class="center" id="alias-button">ALIAS</button>
                 </div>
 
                 <!-- Añadimos el EXIT en HTML. Le aplicamos estilos inline para el color rojo -->
@@ -26,18 +28,16 @@ class EscenaMenu extends Phaser.Scene {
 
         const menuDOM = this.add.dom(600, 600).createFromHTML(menuHTML);
 
-        const btnLeft = menuDOM.node.querySelector('#btn-left');
-        const btnRight = menuDOM.node.querySelector('#btn-right');
-        const btnExit = menuDOM.node.querySelector('#btn-exit');
+        const playButtom = menuDOM.node.querySelector('#play-button');
+        const aliasButton = menuDOM.node.querySelector('#alias-button');
+        const exitButton = menuDOM.node.querySelector('#exit-button');
 
-        btnLeft.addEventListener('click', () => {
-            console.log("Ir a la escena de Juego");
-            this.scene.start('EscenaJuego'); 
+        playButtom.addEventListener('click', () => {
+            this.scene.start('EscenaJuego');
         });
 
         btnRight.addEventListener('click', () => {
-            console.log("Ir a la escena de Ranking");
-            this.scene.start('EscenaRanquing');
+
         });
 
         btnExit.addEventListener('click', () => {
@@ -93,7 +93,7 @@ const config = {
     dom: {
         createContainer: true
     },
-    scene: [EscenaMenu, EscenaJuego, EscenaRanquing]
+    scene: [EscenaMenu, EscenaJuego]
 };
 
 const game = new Phaser.Game(config); 
