@@ -14,7 +14,7 @@ h1{
 	display: flex;
 	justify-content: center;
 	gap: 2rem;
-	width: 80%;
+	width: 100%;
 }
 	
 button.center{
@@ -23,19 +23,20 @@ button.center{
 	margin-top: 1rem;
   	cursor: pointer;
  	background-color:#fff5d1;
-	color: #112250;
+	color: #1a475c;
   	border-color: #8ebd9d;
-	border-radius: 4rem;
-  	font-size: 0.8rem;
+	border-width: 2rem;
+	border-radius: 2rem;
+  	font-size: 1rem;
 }
 
 button.center:hover{
-	background-color: #fad563;
+	background-color: #8ebd9d;
   	border: transparent;
-	box-shadow: 0 0 0;
+	
 }
 
 button.center:active{
-	background-color: #fad563;
+	background-color: #8ebd9d;
   	border-color: #fff5d1;
 }
