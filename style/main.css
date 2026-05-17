@@ -14,7 +14,7 @@ h1{
 	display: flex;
 	justify-content: center;
 	gap: 2rem;
-	width: 80%
+	width: 80%;
 }
 	
 button.center{
