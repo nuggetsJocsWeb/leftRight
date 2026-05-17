@@ -1,32 +1,41 @@
 body{
-  background-color: #1a475c;
+	background-color: #1a475c;
 }
 
 h1{
-  text-align: center;
-  color: #fad563;
+	text-align: center;
+	color: #fad563;
+}
+#mainTitle{
+	color: #fff5d1;
 }
 
+#contenidorBotons{
+	display: flex;
+	justify-content: center;
+	gap: 2rem;
+	width: 80%
+}
+	
 button.center{
-  width: 8rem;
+  	width: 8rem;
 	height: 4rem;
 	margin-top: 1rem;
-  cursor: pointer;
-  background-color:#fff5d1;
-	color: #8ebd9d;
-  border-color: #8ebd9d;
-	border-radius: 2rem;
-	box-shadow: 0 0.25rem 0 #112250;
-  font-size: 0.8rem;
+  	cursor: pointer;
+ 	background-color:#fff5d1;
+	color: #112250;
+  	border-color: #8ebd9d;
+	border-radius: 4rem;
+  	font-size: 0.8rem;
 }
 
 button.center:hover{
 	background-color: #fad563;
-  border: none;
+  	border: transparent;
 	box-shadow: 0 0 0;
 }
 
 button.center:active{
 	background-color: #fad563;
-  border-color: #fff5d1;
+  	border-color: #fff5d1;
 }
