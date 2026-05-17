@@ -80,8 +80,12 @@ const config = {
     type: Phaser.AUTO,
     width: 1200,
     height: 1200,
+    parent: 'game-container',
     backgroundColor: '#97a3a6',
+    dom: {
+        createContainer: true
+    },
     scene: [EscenaMenu, EscenaJuego, EscenaRanquing]
 };
 
-const game = new Phaser.Game(config);
+const game = new Phaser.Game(config); 
