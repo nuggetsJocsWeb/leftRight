@@ -1,4 +1,4 @@
-export default class EscenaSeleccion extends Phases.share {
+export default class EscenaSeleccion extends Phaser.share {
     constructor(){
         super("EscenaSeleccion");
     }

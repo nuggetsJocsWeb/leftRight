@@ -36,7 +36,7 @@ class EscenaMenu extends Phaser.Scene {
             this.scene.start('EscenaSeleccion');
         });
 
-        btnExit.addEventListener('click', () => {
+        exitButton.addEventListener('click', () => {
             this.salirDelJuego();
         });
     }
