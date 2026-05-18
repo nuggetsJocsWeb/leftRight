@@ -56,33 +56,6 @@ class EscenaMenu extends Phaser.Scene {
 
 
 }
-class EscenaJuego extends Phaser.Scene {
-    constructor(){
-        super({ key: 'EscenaJuego' });
-    }
-
-    preload(){
-
-    }
-
-    create(){
-
-    }
-}
-
-class EscenaRanquing extends Phaser.Scene {
-    constructor(){
-        super({ key: 'EscenaRanquing' });
-    }
-
-    preload(){
-
-    }
-    
-    create(){
-
-    }
-}
 
 const config = {
     type: Phaser.AUTO,
