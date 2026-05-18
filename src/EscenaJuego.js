@@ -3,11 +3,28 @@ export default class EscenaJuego extends Phaser.Scene {
         super("EscenaJuego");
     }
 
+    init(data){
+        this.alias1 = data.alias1 || "Jugador 1";
+        this.alias2 = data.alias2 || "Jugador 2";
+    }
+
     create(){
         // CONSTANTS
         this.playerSpeed = 300;
         this.jumpForce = 500;
-    
+
+        // PUNTUACIONS INICIALS DELS JUGADORS
+        this.score1 = 0;
+        this.score2 = 0;
+
+        // TEXT DE LES PUNTUACIONS
+        this.scoreText1 = this.add.text(16, 16, this.alias1 + ": 0", { fontSize: '20px', fill: '#000' });
+        this.scoreText2 = this.add.text(750, 16, this.alias2 + ": 0", { fontSize: '20px', fill: '#000' });
+
+        // FIXEM ELS TEXTOS DE LES PUNTUACIONS A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
+        this.scoreText1.setScrollFactor(0);
+        this.scoreText2.setScrollFactor(0);
+        
         // PLATAFORMES
         this.platforms = this.physics.add.staticGroup(); // Creem un grup de plataformes immòbils (a part de no tenir moviment,tampoc tenen gravetat)
 
@@ -145,7 +162,19 @@ export default class EscenaJuego extends Phaser.Scene {
         // Eliminem l'argument del joc
         if(argument.active){
             argument.destroy();
-            console.log("Argument recollit per " + (player === this.player1 ? "Jugador 1" : "Jugador 2"));
+            console.log("Argument recollit per " + (player === this.player1 ? this.alias1 : this.alias2));
+        }
+
+        // ACTUALITZEM LA PUNTUACIÓ DEL JUGADOR QUE HA RECOLLIT L'ARGUMENT
+        if(player === this.player1){
+            this.score1 += 5; // El jugador 1 rep 5 punts per cada argument recollit
+            this.scoreText1.setText(this.alias1 + ": " + this.score1); // Actualitzem el text de la puntuació que es mostra per pantalla del jugador 1
+            console.log("Puntuació " + this.alias1 + ": " + this.score1);
+        }
+        else{
+            this.score2 += 5; // El jugador 2 rep 5 punts per cada argument recollit
+            this.scoreText2.setText(this.alias2 + ": " + this.score2); // Actualitzem el text de la puntuació que es mostra per pantalla del jugador 2
+            console.log("Puntuació " + this.alias2 + ": " + this.score2);
         }
     }
 }
