@@ -1,4 +1,5 @@
 import EscenaJuego from './EscenaJuego.js';
+import EscenaSeleccion from './EscenaSeleccion.js';
 
 class EscenaMenu extends Phaser.Scene {
     constructor() {
@@ -34,7 +35,7 @@ class EscenaMenu extends Phaser.Scene {
         const exitButton = menuDOM.node.querySelector('#exit-button');
 
         playButton.addEventListener('click', () => {
-            this.scene.start('EscenaJuego');
+            this.scene.start('EscenaSeleccion');
         });
 
         btnExit.addEventListener('click', () => {
@@ -59,7 +60,7 @@ const config = {
     dom: {
         createContainer: true
     },
-    scene: [EscenaMenu, EscenaJuego]
+    scene: [EscenaMenu, EscenaJuego, EscenaSeleccion]
 };
 
 const game = new Phaser.Game(config); 
