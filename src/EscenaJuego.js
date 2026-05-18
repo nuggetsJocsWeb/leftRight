@@ -43,6 +43,34 @@ export default class EscenaJuego extends Phaser.Scene {
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT, // Per desplaçar-se a la dreta el jugador 2 ha de polsar la tecla de fletxa dreta
             up: Phaser.Input.Keyboard.KeyCodes.UP // Per saltar cap amunt el jugador 2 ha de polsar la tecla de fletxa amunt
         });
+
+        // ARGUMENTS
+        this.arguments = this.physics.add.group(); // Creem un grup d'arguments
+
+        // Generem arguments
+        this.time.addEvent({
+            delay: 1000, // Es genera un argument cada segon
+            callback: this.generateArgument,
+            callbackScope: this,
+            loop: true
+        });
+
+        // Detectem les col·lisions entre els arguments i els jugadors (és a dir, la recollida dels arguments)
+        this.physics.add.overlap(
+            this.player1,
+            this.arguments,
+            this.collectArgument,
+            null,
+            this
+        );
+
+        this.physics.add.overlap(
+            this.player2,
+            this.arguments,
+            this.collectArgument,
+            null,
+            this
+        );
     }
 
     update(){
@@ -76,6 +104,48 @@ export default class EscenaJuego extends Phaser.Scene {
         // COMPROVEM SALT
         if(this.keys2.up.isDown && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
             this.player2.body.setVelocityY(-this.jumpForce); 
+        }
+
+        // ELIMINEM ELS ARGUMENTS QUE CAUEN FORA DE LA PANTALLA
+        this.arguments.getChildren().forEach(argument => {
+            if(argument.y > 800){ // Si un argument cau més enllà de la posició Y 800 (fora de la pantalla), el destruïm
+                if(argument.active){
+                    argument.destroy();
+                }
+            }
+        });
+    }
+    
+    // CREAR ARGUMENTS
+    generateArgument(){
+        const x = Phaser.Math.Between(50, 950); // Generem un argument en una posició aleatòria de l'eix X
+
+        // Creem un argument com un rectangle de color verd
+        let argument = this.add.rectangle(x, -20, 20, 20, 0x00ff00);
+
+        // Afegim físiques a l'argument
+        this.physics.add.existing(argument);
+        argument.body.setBounce(0); // Eliminem el possible rebot dels arguments en col·lisionar amb les plataformes
+
+        // Afegim l'argument al grup d'arguments
+        this.arguments.add(argument);
+
+        // Determinem les col·lisions entre l'argument i les plataformes (perquè caiguin i es quedin a les plataformes en comptes de travessar-les)
+        this.physics.add.collider(argument, this.platforms);
+
+        // Eliminem l'argument després de 5 segons
+        this.time.delayedCall(5000, () => {
+            if(argument.active){ // Comprovem que l'argument encara existeix abans de destruir-lo
+                argument.destroy();
+            }
+        }); 
+    }
+
+    collectArgument(player, argument){
+        // Eliminem l'argument del joc
+        if(argument.active){
+            argument.destroy();
+            console.log("Argument recollit per " + (player === this.player1 ? "Jugador 1" : "Jugador 2"));
         }
     }
 }
