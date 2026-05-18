@@ -10,34 +10,31 @@ class EscenaMenu extends Phaser.Scene {
     }
 
     create() {
+        const{ width, height } = this.scale;
+
         const menuHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 2rem;">
-                <h1 id="mainTitle">LEFT&RIGHT MENU</h1>
+            <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem;">
+                <h1 id="mainTitle" style="text-align: center; margin: 0; color: #ffffff;">LEFT&RIGHT MENU</h1>
                 
-                <div id="contenidorBotons">
+                <div id="contenidorBotons" style="display: flex; gap: 2rem; justify-content: center;">
                     <button class="center" id="play-button">PLAY</button>
-                    <button class="center" id="alias-button">ALIAS</button>
                 </div>
 
-                <!-- Añadimos el EXIT en HTML. Le aplicamos estilos inline para el color rojo -->
-                <button class="center" id="btn-exit" style="background-color: #ba2d2d; color: #ffffff; border-color: #ffffff; margin-top: 3rem;">
+                <button class="center" id="exit-button" style="background-color: #ba2d2d; color: #ffffff; border-color: #ffffff; margin-top: 3rem;">
                     EXIT
                 </button>
             </div>
         `;
 
+        const menuDOM = this.add.dom(width / 2, height / 2).createFromHTML(menuHTML);
+
         const menuDOM = this.add.dom(600, 600).createFromHTML(menuHTML);
 
-        const playButtom = menuDOM.node.querySelector('#play-button');
-        const aliasButton = menuDOM.node.querySelector('#alias-button');
+        const playButton = menuDOM.node.querySelector('#play-button');
         const exitButton = menuDOM.node.querySelector('#exit-button');
 
-        playButtom.addEventListener('click', () => {
+        playButton.addEventListener('click', () => {
             this.scene.start('EscenaJuego');
-        });
-
-        btnRight.addEventListener('click', () => {
-
         });
 
         btnExit.addEventListener('click', () => {
@@ -51,10 +48,6 @@ class EscenaMenu extends Phaser.Scene {
     salirDelJuego(){
         this.game.destroy(true);
     }
-
-    
-
-
 }
 
 const config = {
