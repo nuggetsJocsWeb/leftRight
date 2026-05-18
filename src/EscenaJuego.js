@@ -12,6 +12,7 @@ export default class EscenaJuego extends Phaser.Scene {
         // CONSTANTS
         this.playerSpeed = 300;
         this.jumpForce = 500;
+        this.argumentPoints = 5; // Punts que rep un jugador per cada argument recollit
 
         // PUNTUACIONS INICIALS DELS JUGADORS
         this.score1 = 0;
@@ -24,7 +25,7 @@ export default class EscenaJuego extends Phaser.Scene {
         // FIXEM ELS TEXTOS DE LES PUNTUACIONS A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
         this.scoreText1.setScrollFactor(0);
         this.scoreText2.setScrollFactor(0);
-        
+
         // PLATAFORMES
         this.platforms = this.physics.add.staticGroup(); // Creem un grup de plataformes immòbils (a part de no tenir moviment,tampoc tenen gravetat)
 
@@ -88,40 +89,81 @@ export default class EscenaJuego extends Phaser.Scene {
             null,
             this
         );
+
+        // VARIABLES RELACIONADES AMB EL MARTELL
+        this.hammer = null;
+        this.canStealHammer = true;
+
+        this.player1HasHammer = false;
+        this.player2HasHammer = false;
+
+        this.player1Stunned = false;
+        this.player2Stunned = false;
+
+        this.generateHammer(); 
+
+        // Afegim els controls extra per fer servir el martell
+        this.keys1.attack = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.keys2.attack = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+    
+        // Text que indica que es té el martell equipat (inicialment ocult)
+        this.hammerText1 = this.add.text(0, 0, "Martell equipat!", {fontSize: '24px'});
+        this.hammerText2 = this.add.text(0, 0, "Martell equipat!", {fontSize: '24px'});
+        
+        this.hammerText1.setVisible(false);
+        this.hammerText2.setVisible(false);
+
+        this.hammerText1.setDepth(10);
+        this.hammerText2.setDepth(10);
     }
 
     update(){
         // MOVIMENT JUGADOR 1
-        this.player1.body.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
+        if(!this.player1Stunned){
+            this.player1.body.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
+            
+            // Comprovem desplaçaments
+            if(this.keys1.left.isDown){
+                this.player1.body.setVelocityX(-this.playerSpeed); // Si el jugador 1 prem la tecla A es desplaçarà a l'esquerra
+            }
+            else if(this.keys1.right.isDown){
+                this.player1.body.setVelocityX(this.playerSpeed); // Si el jugador 1 prem la tecla D es desplaçarà cap a la dreta
+            }
 
-        // Comprovem desplaçaments
-        if(this.keys1.left.isDown){
-            this.player1.body.setVelocityX(-this.playerSpeed); // Si el jugador 1 prem la tecla A es desplaçarà a l'esquerra
-        }
-        else if(this.keys1.right.isDown){
-            this.player1.body.setVelocityX(this.playerSpeed); // Si el jugador 1 prem la tecla D es desplaçarà cap a la dreta
-        }
-
-        // COMPROVEM SALT
-        if(this.keys1.up.isDown && this.player1.body.blocked.down){ // Si el jugador 1 prem la tecla W i està tocant el terra o una plataforma, saltarà cap amunt
-            this.player1.body.setVelocityY(-this.jumpForce); 
+            // COMPROVEM SALT
+            if(this.keys1.up.isDown && this.player1.body.blocked.down){ // Si el jugador 1 prem la tecla W i està tocant el terra o una plataforma, saltarà cap amunt
+                this.player1.body.setVelocityY(-this.jumpForce); 
+            }
         }
 
         // MOVIMENT JUGADOR 2
-        this.player2.body.setVelocityX(0); // Quan el jugador 2 no prem cap tecla no es mou
+        if(!this.player2Stunned){
+            this.player2.body.setVelocityX(0); // Quan el jugador 2 no prem cap tecla no es mou
 
-        // Comprovem desplaçaments
-        if(this.keys2.left.isDown){
-            this.player2.body.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
+            // Comprovem desplaçaments
+            if(this.keys2.left.isDown){
+                this.player2.body.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
+            }
+            else if(this.keys2.right.isDown){
+                this.player2.body.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
+            }
+            
+            // COMPROVEM SALT
+            if(this.keys2.up.isDown && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
+                this.player2.body.setVelocityY(-this.jumpForce); 
+            }
         }
-        else if(this.keys2.right.isDown){
-            this.player2.body.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
+        
+        // ATACS
+        if(Phaser.Input.Keyboard.JustDown(this.keys1.attack) && this.player1HasHammer && !this.player1Stunned){
+            this.attackPlayer(this.player1, this.player2);
+        }
+        else if(Phaser.Input.Keyboard.JustDown(this.keys2.attack) && this.player2HasHammer && !this.player2Stunned){
+            this.attackPlayer(this.player2, this.player1);
         }
 
-        // COMPROVEM SALT
-        if(this.keys2.up.isDown && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
-            this.player2.body.setVelocityY(-this.jumpForce); 
-        }
+        // ROBAR MARTELL
+        this.checkHammerSteal();
 
         // ELIMINEM ELS ARGUMENTS QUE CAUEN FORA DE LA PANTALLA
         this.arguments.getChildren().forEach(argument => {
@@ -131,6 +173,14 @@ export default class EscenaJuego extends Phaser.Scene {
                 }
             }
         });
+
+        // POSICIONAR TEXT
+        this.hammerText1.setPosition(this.player1.x - 10, this.player1.y - 50);
+        this.hammerText2.setPosition(this.player2.x - 10, this.player2.y - 50);
+
+        // TEXT MARTELL EQUIPAT
+        this.hammerText1.setVisible(this.player1HasHammer);
+        this.hammerText2.setVisible(this.player2HasHammer);
     }
     
     // CREAR ARGUMENTS
@@ -175,6 +225,149 @@ export default class EscenaJuego extends Phaser.Scene {
             this.score2 += 5; // El jugador 2 rep 5 punts per cada argument recollit
             this.scoreText2.setText(this.alias2 + ": " + this.score2); // Actualitzem el text de la puntuació que es mostra per pantalla del jugador 2
             console.log("Puntuació " + this.alias2 + ": " + this.score2);
+        }
+    }
+
+    // GENERAR MARTELL
+    generateHammer(){
+        const randomTime = Phaser.Math.Between(6000, 20000); // El martell apareixerà en intervals aleatoris entre 6 i 20 segons
+
+        this.time.delayedCall(randomTime, () => {
+            if(this.hammer === null){
+                const x = Phaser.Math.Between(100, this.scale.width - 50); // Generem el martell en una posició aleatòria de l'eix X
+                
+                this.hammer = this.add.rectangle(x, 0, 30, 30, 0xffff00); // Creem el martell com un rectangle de color groc
+                this.physics.add.existing(this.hammer); // Afegim físiques al martell
+                
+                // Afegim físiques al martell
+                this.hammer.body.setBounce(0); // Eliminem el rebot del martell al col·lisionar
+                this.physics.add.collider(this.hammer, this.platforms);
+
+                this.physics.add.overlap(
+                    this.player1,
+                    this.hammer,
+                    this.collectHammer,
+                    null,
+                    this
+                );
+
+                this.physics.add.overlap(
+                    this.player2,
+                    this.hammer,
+                    this.collectHammer,
+                    null,
+                    this
+                );
+            }
+
+            this.generateHammer(); // Programem la generació del pròxim martell 
+        });
+    }
+
+    // RECOLLIR MARTELL
+    collectHammer(player, hammer){
+        if(player === this.player1){
+            this.player1HasHammer = true; // El jugador 1 ha recollit el martell
+            this.player2HasHammer = false; // El jugador 2 no té el martell
+            console.log(this.alias1 + " ha recollit el martell!");
+        }
+        else{
+            this.player2HasHammer = true; // El jugador 2 ha recollit el martell
+            this.player1HasHammer = false; // El jugador 1 no té el martell
+            console.log(this.alias2 + " ha recollit el martell!");
+        }
+
+        hammer.destroy(); // Eliminem el martell del joc un cop recollit
+        this.hammer = null; // Resetejem la variable del martell
+
+        // Eliminem el martell després de 6 segons
+        this.time.delayedCall(6000, () => {
+            this.player1HasHammer = false; // El jugador 1 deixa de tenir el martell
+            this.player2HasHammer = false; // El jugador 2 deixa de tenir el martell
+
+            console.log("El martell ha desaparegut!");
+        });
+    }
+
+    // ATACAR AMB EL MARTELL
+    attackPlayer(attacker, victim){
+        const distance = Phaser.Math.Distance.Between(
+            attacker.x, attacker.y, 
+            victim.x, victim.y
+        );
+
+        // En el cas de que els jugadors estiguin a una distància menor a 50 píxels, l'atac serà vàlid
+        if(distance < 50){
+            if(victim === this.player1){
+                if(!this.player1Stunned){
+                    this.player1Stunned = true;
+                    console.log(this.alias1 + " està atordit!");
+
+                    this.time.delayedCall(2000, () => {
+                        this.player1Stunned = false;
+                    });
+                }
+            }
+            else{
+                if(!this.player2Stunned){
+                    this.player2Stunned = true;
+                    console.log(this.alias2 + " està atordit!");
+
+                    this.time.delayedCall(2000, () => {
+                        this.player2Stunned = false;
+                    });
+                }
+            }
+        }
+    }
+
+    // COMPROVAR ROBATORI MARTELL
+    checkHammerSteal(){
+        // Evitem que es pugui robar continuament el martell
+        if(!this.canStealHammer){
+            return;
+        }
+
+        // Distància entre els jugadors
+        const distance = Phaser.Math.Distance.Between(
+            this.player1.x, this.player1.y,
+            this.player2.x, this.player2.y 
+        );
+
+        // El jugador 2 roba el martell al jugador 1
+        if(this.player1HasHammer && // El jugador 1 té el martell
+            this.player2.body.velocity.y > 0 && // El jugador 2 està caient 
+            this.player2.y < this.player1.y - 20 && // El jugador 2 està per sobre del jugador 1 (per evitar que es pugui robar el martell desplaçant-se cap a un costat)
+            distance < 50 // Els jugadors estan a una distància menor a 50 píxels
+        ){
+            this.player1HasHammer = false;
+            this.player2HasHammer = true;
+            console.log(this.alias2 + " ha robat el martell a " + this.alias1 + "!");     
+        
+            // Cooldown del robatori
+            this.canStealHammer = false;
+
+            this.time.delayedCall(1000, () => {
+                this.canStealHammer = true;
+            });
+        }
+
+        // El jugador 1 roba el martell al jugador 2
+        else if(this.player2HasHammer && // El jugador 2 té el martell
+            this.player1.body.velocity.y > 0 && // El jugador 1 està caient 
+            this.player1.y < this.player2.y - 20 && // El jugador 1 està per sobre del jugador 2 (per evitar que es pugui robar el martell desplaçant-se cap a un costat)
+            distance < 50 // Els jugadors estan a una distància menor a 50 píxels
+        ){
+            this.player1HasHammer = true;
+            this.player2HasHammer = false;
+            console.log(this.alias1 + " ha robat el martell a " + this.alias2 + "!");     
+        
+            // Cooldown del robatori
+            this.canStealHammer = false;
+
+            this.time.delayedCall(1000, () => {
+                this.canStealHammer = true;
+            });
         }
     }
 }
