@@ -29,8 +29,6 @@ class EscenaMenu extends Phaser.Scene {
 
         const menuDOM = this.add.dom(width / 2, height / 2).createFromHTML(menuHTML);
 
-        const menuDOM = this.add.dom(600, 600).createFromHTML(menuHTML);
-
         const playButton = menuDOM.node.querySelector('#play-button');
         const exitButton = menuDOM.node.querySelector('#exit-button');
 
