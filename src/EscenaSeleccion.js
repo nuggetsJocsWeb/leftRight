@@ -1,4 +1,4 @@
-export default class EscenaSeleccion extends Phaser.share {
+export default class EscenaSeleccion extends Phaser.Scene {
     constructor(){
         super("EscenaSeleccion");
     }
