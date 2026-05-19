@@ -35,7 +35,7 @@ class EscenaMenu extends Phaser.Scene {
         const exitButton = menuDOM.node.querySelector('#exit-button');
 
         playButton.addEventListener('click', () => {
-            this.scene.start('EscenaSeleccion');
+            this.scene.start('EscenaDificultad');
         });
 
         exitButton.addEventListener('click', () => {
