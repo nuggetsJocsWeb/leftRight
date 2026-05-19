@@ -10,9 +10,7 @@ export default class EscenaJuego extends Phaser.Scene {
             'assets/spritesheetJug1.png',
             {
                 frameWidth: 172,
-                frameHeight: 320,
-                margin: 0,
-                spacing: 0
+                frameHeight: 320
             }
         );
 
@@ -21,9 +19,7 @@ export default class EscenaJuego extends Phaser.Scene {
             'assets/spritesheetJug2.png',
             {
                 frameWidth: 172,
-                frameHeight: 320,
-                margin: 0,
-                spacing: 0
+                frameHeight: 320
             }
         );
 
@@ -48,8 +44,6 @@ export default class EscenaJuego extends Phaser.Scene {
     }
 
     create(){
-        console.log(this.textures.get('player1').frameTotal);
-        console.log(this.textures.get('player1').getFrameNames());
         // CONSTANTS
         this.playerSpeed = 300;
         this.jumpForce = 500;
