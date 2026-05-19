@@ -78,14 +78,24 @@ export default class EscenaJuego extends Phaser.Scene {
         this.platforms.create(700,350,null).setDisplaySize(300,20).refreshBody();
         
         // JUGADOR 1
-        this.player1 = this.physics.add.sprite(200,100,'player1'); // Creem el jugador 1 com un sprite amb les físiques activades
+        this.player1 = this.physics.add.sprite(200, 100, 'player1');
+
         this.player1.setScale(0.3);
-        this.player1.setCollideWorldBounds(true); // Per evitar que el jugador surti dels límits definits del joc
-        
+        this.player1.setCollideWorldBounds(true);
+
+        // Ajust del collider
+        this.player1.body.setSize(70, 180);
+        this.player1.body.setOffset(50, 110);
+
         // JUGADOR 2
-        this.player2 = this.physics.add.sprite(800,100,'player2'); // Creem el jugador 2 com un sprite amb les físiques activades
-        this.player2.setScale(0.3); // Augmentem la mida del jugador 2 per fer-lo més visible
-        this.player2.setCollideWorldBounds(true); // Per evitar que el jugador surti dels límits definits del joc
+        this.player2 = this.physics.add.sprite(800, 100, 'player2');
+
+        this.player2.setScale(0.3);
+        this.player2.setCollideWorldBounds(true);
+
+        // Ajust del collider
+        this.player2.body.setSize(70, 180);
+        this.player2.body.setOffset(50, 110);
 
         // COL·LISIONS
         this.physics.add.collider(this.player1, this.platforms); // Definim les col·lisions entre el jugador 1 i les plataformes creades
@@ -295,25 +305,41 @@ export default class EscenaJuego extends Phaser.Scene {
         if(!this.player1Stunned){            
             // Comprovem desplaçaments
             if(this.keys1.left.isDown){
-                this.player1.setVelocityX(-this.playerSpeed); // Si el jugador 1 prem la tecla A es desplaçarà a l'esquerra
-              
-                this.player1.anims.play('player1_walk', true);
-                this.player1.setFlipX(true); // Girem el sprite del jugador 1 cap a l'esquerra  
+                this.player1.setVelocityX(-this.playerSpeed);
+
+                // Només reproduïm l'animació en el cas de no estar activa
+                if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
+                    this.player1.anims.play('player1_walk');
+                }
+
+                this.player1.setFlipX(true);
             }
             else if(this.keys1.right.isDown){
-                this.player1.setVelocityX(this.playerSpeed); // Si el jugador 1 prem la tecla D es desplaçarà cap a la dreta
-                
-                this.player1.anims.play('player1_walk', true);
-                this.player1.setFlipX(false); // Girem el sprite del jugador 1 cap a la dreta
+                this.player1.setVelocityX(this.playerSpeed);
+
+                // Només reproduïm l'animació si no està activa
+                if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
+                    this.player1.anims.play('player1_walk');
+                }
+
+                this.player1.setFlipX(false);
             }
             else{
-                this.player1.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
-                this.player1.anims.play('player1_idle', true); // Si el jugador 1 no prem cap tecla de desplaçament, s'atura l'animació de caminar
+                this.player1.setVelocityX(0);
+
+                // Només reproduïm idle si no està activa
+                if(this.player1.anims.currentAnim?.key !== 'player1_idle'){
+                    this.player1.anims.play('player1_idle');
+                }
             }
 
-            // COMPROVEM SALT
-            if(this.keys1.up.isDown && this.player1.body.blocked.down){ // Si el jugador 1 prem la tecla W i està tocant el terra o una plataforma, saltarà cap amunt
-                this.player1.anims.play('player1_jump', true); // Reproduïm l'animació de saltar del jugador 1 
+            // COMPROVEM EL SALT
+            if(this.keys1.up.isDown && this.player1.body.blocked.down){
+                this.player1.setVelocityY(-this.jumpForce);
+
+                if(this.player1.anims.currentAnim?.key !== 'player1_jump'){
+                    this.player1.anims.play('player1_jump');
+                }
             }
         }
 
@@ -325,22 +351,34 @@ export default class EscenaJuego extends Phaser.Scene {
             if(this.keys2.left.isDown){
                 this.player2.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
                 
-                this.player2.anims.play('player2_walk', true);
+                if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
+                    this.player2.anims.play('player1_walk');
+                }
+
                 this.player2.setFlipX(true); // Girem el sprite del jugador 2 cap a l'esquerra
             }
             else if(this.keys2.right.isDown){
                 this.player2.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
                 
-                this.player2.anims.play('player2_walk', true);
+                if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
+                    this.player2.anims.play('player1_walk');
+                }
+
                 this.player2.setFlipX(false); // Girem el sprite del jugador 2 cap a la dreta
             }
             else{
-                this.player2.anims.play('player2_idle', true); // Si el jugador 2 no prem cap tecla de desplaçament, s'atura l'animació de caminar
-            }
+                this.player2.setVelocityX(0);
+                if(this.player2.anims.currentAnim?.key !== 'player2_idle'){
+                    this.player2.anims.play('player2_idle', true); // Si el jugador 2 no prem cap tecla de desplaçament, s'atura l'animació de caminar
+                }  
+            } 
 
             // COMPROVEM SALT
             if(this.keys2.up.isDown && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
-                this.player2.anims.play('player2_jump', true); // Reproduïm l'animació de saltar del jugador 2
+                this.player2.setVelocityY(-this.jumpForce);
+                if(this.player2.anims.currentAnim?.key !== 'player2_jump'){
+                    this.player2.anims.play('player2_jump');
+                }
             }
         }
         
@@ -379,6 +417,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // Creem un argument com un rectangle de color verd
         let argument = this.add.image(x, 0, 'argument');
+        argument.setScale(0.2); // Reduïm la mida de l'argument per fer-lo més visible i manejable
 
         // Afegim físiques a l'argument
         this.physics.add.existing(argument);
