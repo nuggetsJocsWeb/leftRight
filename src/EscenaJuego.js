@@ -6,6 +6,8 @@ export default class EscenaJuego extends Phaser.Scene {
     init(data){
         this.alias1 = data.alias1 || "Jugador 1";
         this.alias2 = data.alias2 || "Jugador 2";
+
+        this.initialFallSpeed = data.argumentFallSpeed || 175;
     }
 
     create(){
@@ -14,7 +16,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.jumpForce = 500;
 
         this.argumentPoints = 5; // Punts que rep un jugador per cada argument recollit
-        this.argumentFallSpeed = 150; // Velocitat inicial a la que cauen els arguments
+        this.argumentFallSpeed = this.initialFallSpeed; // Velocitat inicial a la que cauen els arguments
         this.argumentLifeSpan = 5000; // Temps (en ms) què un argument roman al joc abans de desaparèixer
         
         this.gameTime = 240;  // Durada de la partida (4 minuts)

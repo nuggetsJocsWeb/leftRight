@@ -3,6 +3,10 @@ export default class EscenaSeleccion extends Phaser.Scene {
         super("EscenaSeleccion");
     }
 
+    Infinity(data){
+        this.argumentFallSpped = data.argumentFallSpped || 175;
+    }
+
     create(){
         const { width, height } = this.scale;
 
@@ -30,12 +34,14 @@ export default class EscenaSeleccion extends Phaser.Scene {
         const btn1 = domElement.node.querySelector('#btn-1jugador');
         const btn2 = domElement.node.querySelector('#btn-2jugadores');
 
+
+
         btn1.addEventListener('click', () => {
-            this.scene.start('EscenaJuego', { cantidadJugadores: 1 });
+            this.scene.start('EscenaJuegoUnJugador', {argumentFallSpped: this.argumentFallSpped });
         });
 
         btn2.addEventListener('click', () => {
-            this.scene.start('EscenaJuego', { cantidadJugadores: 2 });
+            this.scene.start('EscenaJuego', {argumentFallSpped: this.argumentFallSpped });
         });
     }
 
