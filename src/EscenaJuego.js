@@ -13,7 +13,9 @@ export default class EscenaJuego extends Phaser.Scene {
         this.playerSpeed = 300;
         this.jumpForce = 500;
         this.argumentPoints = 5; // Punts que rep un jugador per cada argument recollit
-
+        this.argumentFallSpeed = 150; // Velocitat inicial a la que cauen els arguments
+        this.argumentLifeSpan = 5000; // Temps (en ms) què un argument roman al joc abans de desaparèixer
+        
         // PUNTUACIONS INICIALS DELS JUGADORS
         this.score1 = 0;
         this.score2 = 0;
@@ -89,6 +91,22 @@ export default class EscenaJuego extends Phaser.Scene {
             null,
             this
         );
+
+        // Augment de la dificultat modificant la velocitat de caiguda dels arguments
+        this.time.addEvent({
+            delay: 30000,
+            callback: () =>{
+                this.argumentFallSpeed += 40;
+                if(this.argumentLifeSpan > 2000){
+                    this.argumentLifeSpan -= 500;
+                }
+
+                console.log("Dificultat augmentada! Velocitat actual de caiguda dels arguments: " + this.argumentFallSpeed);
+                console.log("Temps de vida actual dels arguments: " + this.argumentLifeSpan);
+            },
+            callbackScope: this,
+            loop: true
+        });
 
         // VARIABLES RELACIONADES AMB EL MARTELL
         this.hammer = null;
@@ -192,6 +210,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // Afegim físiques a l'argument
         this.physics.add.existing(argument);
+        argument.body.setGravityY(this.argumentFallSpeed); // Fem que l'argument caigui a la velocitat definida per la variable argumentFallSpeed
         argument.body.setBounce(0); // Eliminem el possible rebot dels arguments en col·lisionar amb les plataformes
 
         // Afegim l'argument al grup d'arguments
@@ -200,8 +219,8 @@ export default class EscenaJuego extends Phaser.Scene {
         // Determinem les col·lisions entre l'argument i les plataformes (perquè caiguin i es quedin a les plataformes en comptes de travessar-les)
         this.physics.add.collider(argument, this.platforms);
 
-        // Eliminem l'argument després de 5 segons
-        this.time.delayedCall(5000, () => {
+        // Eliminem l'argument després de cert temps
+        this.time.delayedCall(this.argumentLifeSpan, () => {
             if(argument.active){ // Comprovem que l'argument encara existeix abans de destruir-lo
                 argument.destroy();
             }
