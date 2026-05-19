@@ -3,6 +3,39 @@ export default class EscenaJuego extends Phaser.Scene {
         super("EscenaJuego");
     }
 
+    preload(){
+        // SPRITESHEETS DELS JUGADORS
+        this.load.spritesheet(
+            'player1',
+            'assets/spritesheetJug1.png',
+            {
+                frameWidth: 172,
+                frameHeight: 320
+            }
+        );
+
+        this.load.spritesheet(
+            'player2',
+            'assets/spritesheetJug2.png',
+            {
+                frameWidth: 172,
+                frameHeight: 320
+            }
+        );
+
+        // MARTELL
+        this.load.image(
+            'hammer',
+            'assets/martell.png'
+        );
+
+        // ARGUMENT
+        this.load.image(
+            'argument',
+            'assets/argument.png'
+        );
+    }
+
     init(data = {}){
         this.alias1 = data.alias1 || "Jugador 1";
         this.alias2 = data.alias2 || "Jugador 2";
@@ -45,14 +78,14 @@ export default class EscenaJuego extends Phaser.Scene {
         this.platforms.create(700,350,null).setDisplaySize(300,20).refreshBody();
         
         // JUGADOR 1
-        this.player1 = this.add.rectangle(200,100,40,40,0x0000ff);
-        this.physics.add.existing(this.player1); // Afegim físiques al jugador 1
-        this.player1.body.setCollideWorldBounds(true); // Per evitar que el jugador surti dels límits definits del joc
+        this.player1 = this.physics.add.sprite(200,100,'player1'); // Creem el jugador 1 com un sprite amb les físiques activades
+        this.player1.setScale(0.3);
+        this.player1.setCollideWorldBounds(true); // Per evitar que el jugador surti dels límits definits del joc
         
         // JUGADOR 2
-        this.player2 = this.add.rectangle(800,100,40,40,0xff0000);
-        this.physics.add.existing(this.player2); // Afegim físiques al segon jugador
-        this.player2.body.setCollideWorldBounds(true); // Per evitar que el jugador surti dels límits definits del joc
+        this.player2 = this.physics.add.sprite(800,100,'player2'); // Creem el jugador 2 com un sprite amb les físiques activades
+        this.player2.setScale(0.3); // Augmentem la mida del jugador 2 per fer-lo més visible
+        this.player2.setCollideWorldBounds(true); // Per evitar que el jugador surti dels límits definits del joc
 
         // COL·LISIONS
         this.physics.add.collider(this.player1, this.platforms); // Definim les col·lisions entre el jugador 1 i les plataformes creades
@@ -73,6 +106,92 @@ export default class EscenaJuego extends Phaser.Scene {
             up: Phaser.Input.Keyboard.KeyCodes.UP // Per saltar cap amunt el jugador 2 ha de polsar la tecla de fletxa amunt
         });
 
+        // ANIMACIONS JUGADOR 1
+        // Idle
+        this.anims.create({
+            key: 'player1_idle',
+            frames: this.anims.generateFrameNumbers(
+                'player1',
+                {
+                    start: 0,
+                    end: 4
+                }
+            ),
+            frameRate: 5,
+            repeat: -1
+        });
+
+        // Walk
+        this.anims.create({
+            key: 'player1_walk',
+            frames: this.anims.generateFrameNumbers(
+                'player1',
+                {
+                    start: 5,
+                    end: 9
+                }
+            ),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        // Jump
+        this.anims.create({
+            key: 'player1_jump',
+            frames: this.anims.generateFrameNumbers(
+                'player1',
+                {
+                    start: 15,
+                    end: 19
+                }
+            ),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        // ANIMACIONS PLAYER 2
+        // Idle
+        this.anims.create({
+            key: 'player2_idle',
+            frames: this.anims.generateFrameNumbers(
+                'player2',
+                {
+                    start: 0,
+                    end: 4
+                }
+            ),
+            frameRate: 5,
+            repeat: -1
+        });
+
+        // Walk
+        this.anims.create({
+            key: 'player2_walk',
+            frames: this.anims.generateFrameNumbers(
+                'player2',
+                {
+                    start: 5,
+                    end: 9
+                }
+            ),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        // Jump
+        this.anims.create({
+            key: 'player2_jump',
+            frames: this.anims.generateFrameNumbers(
+                'player2',
+                {
+                    start: 15,
+                    end: 19
+                }
+            ),
+            frameRate: 8,
+            repeat: -1
+        });
+        
         // ARGUMENTS
         this.arguments = this.physics.add.group(); // Creem un grup d'arguments
 
@@ -171,38 +290,57 @@ export default class EscenaJuego extends Phaser.Scene {
 
     update(){
         // MOVIMENT JUGADOR 1
-        if(!this.player1Stunned){
-            this.player1.body.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
-            
+        this.player1.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
+        
+        if(!this.player1Stunned){            
             // Comprovem desplaçaments
             if(this.keys1.left.isDown){
-                this.player1.body.setVelocityX(-this.playerSpeed); // Si el jugador 1 prem la tecla A es desplaçarà a l'esquerra
+                this.player1.setVelocityX(-this.playerSpeed); // Si el jugador 1 prem la tecla A es desplaçarà a l'esquerra
+              
+                this.player1.anims.play('player1_walk', true);
+                this.player1.setFlipX(true); // Girem el sprite del jugador 1 cap a l'esquerra  
             }
             else if(this.keys1.right.isDown){
-                this.player1.body.setVelocityX(this.playerSpeed); // Si el jugador 1 prem la tecla D es desplaçarà cap a la dreta
+                this.player1.setVelocityX(this.playerSpeed); // Si el jugador 1 prem la tecla D es desplaçarà cap a la dreta
+                
+                this.player1.anims.play('player1_walk', true);
+                this.player1.setFlipX(false); // Girem el sprite del jugador 1 cap a la dreta
+            }
+            else{
+                this.player1.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
+                this.player1.anims.play('player1_idle', true); // Si el jugador 1 no prem cap tecla de desplaçament, s'atura l'animació de caminar
             }
 
             // COMPROVEM SALT
             if(this.keys1.up.isDown && this.player1.body.blocked.down){ // Si el jugador 1 prem la tecla W i està tocant el terra o una plataforma, saltarà cap amunt
-                this.player1.body.setVelocityY(-this.jumpForce); 
+                this.player1.anims.play('player1_jump', true); // Reproduïm l'animació de saltar del jugador 1 
             }
         }
 
         // MOVIMENT JUGADOR 2
+        this.player2.setVelocityX(0); // Quan el jugador 2 no prem cap tecla no es mou
+        
         if(!this.player2Stunned){
-            this.player2.body.setVelocityX(0); // Quan el jugador 2 no prem cap tecla no es mou
-
             // Comprovem desplaçaments
             if(this.keys2.left.isDown){
-                this.player2.body.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
+                this.player2.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
+                
+                this.player2.anims.play('player2_walk', true);
+                this.player2.setFlipX(true); // Girem el sprite del jugador 2 cap a l'esquerra
             }
             else if(this.keys2.right.isDown){
-                this.player2.body.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
+                this.player2.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
+                
+                this.player2.anims.play('player2_walk', true);
+                this.player2.setFlipX(false); // Girem el sprite del jugador 2 cap a la dreta
             }
-            
+            else{
+                this.player2.anims.play('player2_idle', true); // Si el jugador 2 no prem cap tecla de desplaçament, s'atura l'animació de caminar
+            }
+
             // COMPROVEM SALT
             if(this.keys2.up.isDown && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
-                this.player2.body.setVelocityY(-this.jumpForce); 
+                this.player2.anims.play('player2_jump', true); // Reproduïm l'animació de saltar del jugador 2
             }
         }
         
@@ -240,7 +378,7 @@ export default class EscenaJuego extends Phaser.Scene {
         const x = Phaser.Math.Between(50, 950); // Generem un argument en una posició aleatòria de l'eix X
 
         // Creem un argument com un rectangle de color verd
-        let argument = this.add.rectangle(x, -20, 20, 20, 0x00ff00);
+        let argument = this.add.image(x, 0, 'argument');
 
         // Afegim físiques a l'argument
         this.physics.add.existing(argument);
@@ -290,9 +428,9 @@ export default class EscenaJuego extends Phaser.Scene {
             if(this.hammer === null){
                 const x = Phaser.Math.Between(100, this.scale.width - 50); // Generem el martell en una posició aleatòria de l'eix X
                 
-                this.hammer = this.add.rectangle(x, 0, 30, 30, 0xffff00); // Creem el martell com un rectangle de color groc
-                this.physics.add.existing(this.hammer); // Afegim físiques al martell
-                
+                this.hammer = this.physics.add.image(x, 0, 'hammer'); // Creem el martell com un rectangle de color groc
+                this.hammer.setScale(0.5); // Reduïm la mida del martell per fer-lo més visible i manejable
+
                 // Afegim físiques al martell
                 this.hammer.body.setBounce(0); // Eliminem el rebot del martell al col·lisionar
                 this.hammer.body.setCollideWorldBounds(true);
@@ -448,7 +586,6 @@ export default class EscenaJuego extends Phaser.Scene {
             winnerText, {
                 fontSize: '48px',
                 fill: '#000',
-                backgroundColor: '#ffffff'
         }).setOrigin(0.5);
     }
 }
