@@ -43,11 +43,7 @@ export default class EscenaAlias extends Phaser.Scene{
             const alias2 = input2.value || "Jugador 2";
 
             // Pasamos los nombres y la velocidad a la escena final de 2 jugadores
-            this.scene.start('EscenaJuego', { 
-                alias1: alias1, 
-                alias2: alias2, 
-                argumentFallSpeed: this.argumentFallSpeed 
-            });
+            this.scene.start('EscenaJuego', { alias1: alias1, alias2: alias2, argumentFallSpeed: this.argumentFallSpeed });
         });
     }
 }
