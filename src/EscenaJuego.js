@@ -48,6 +48,8 @@ export default class EscenaJuego extends Phaser.Scene {
     }
 
     create(){
+        console.log(this.textures.get('player1').frameTotal);
+        console.log(this.textures.get('player1').getFrameNames());
         // CONSTANTS
         this.playerSpeed = 300;
         this.jumpForce = 500;
