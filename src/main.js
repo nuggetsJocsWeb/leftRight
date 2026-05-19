@@ -54,8 +54,8 @@ class EscenaMenu extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    width: 1200,
-    height: 1200,
+    width: 1000,
+    height: 800,
     parent: 'game-container',
     backgroundColor: '#97a3a6',
 
@@ -66,7 +66,7 @@ const config = {
             debug: false
         }
     },
-    
+
     dom: {
         createContainer: true
     },
