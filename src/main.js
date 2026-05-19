@@ -1,7 +1,7 @@
 import EscenaJuego from './EscenaJuego.js';
-import EscenaJuegoUnJugador from './EscenaJuegoUnJugador';
+import EscenaJuegoUnJugador from './EscenaJuegoUnJugador.js';
 import EscenaSeleccion from './EscenaSeleccion.js';
-import EscenaDificultad from './EscenaDificultad';
+import EscenaDificultad from './EscenaDificultad.js';
 
 class EscenaMenu extends Phaser.Scene {
     constructor() {
