@@ -3,7 +3,7 @@ export default class EscenaJuego extends Phaser.Scene {
         super("EscenaJuego");
     }
 
-    init(data){
+    init(data = {}){
         this.alias1 = data.alias1 || "Jugador 1";
         this.alias2 = data.alias2 || "Jugador 2";
 
@@ -151,7 +151,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
                 // Convertim el temps restant a minuts i segons
                 const minutes = Math.floor(this.gameTime / 60);
-                const seconds = this.gameTime % 60;
+                let seconds = this.gameTime % 60;
 
                 // Afegim un zero davant dels segons si són menors a 10 
                 seconds = seconds < 10 ? "0" + seconds : seconds;

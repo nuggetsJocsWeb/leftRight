@@ -58,6 +58,15 @@ const config = {
     height: 1200,
     parent: 'game-container',
     backgroundColor: '#97a3a6',
+
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 500 },
+            debug: false
+        }
+    },
+    
     dom: {
         createContainer: true
     },
