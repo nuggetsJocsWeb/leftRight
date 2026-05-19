@@ -41,7 +41,7 @@ export default class EscenaSeleccion extends Phaser.Scene {
         });
 
         btn2.addEventListener('click', () => {
-            this.scene.start('EscenaJuego', {argumentFallSpped: this.argumentFallSpped });
+            this.scene.start('EscenaAlias', {argumentFallSpped: this.argumentFallSpped });
         });
     }
 
