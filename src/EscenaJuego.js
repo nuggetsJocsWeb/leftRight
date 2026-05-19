@@ -84,8 +84,8 @@ export default class EscenaJuego extends Phaser.Scene {
         this.player1.setCollideWorldBounds(true);
 
         // Ajust del collider
-        this.player1.body.setSize(70, 180);
-        this.player1.body.setOffset(50, 110);
+        this.player1.body.setSize(55, 170);
+        this.player1.body.setOffset(58, 145);
 
         // JUGADOR 2
         this.player2 = this.physics.add.sprite(800, 100, 'player2');
@@ -94,8 +94,8 @@ export default class EscenaJuego extends Phaser.Scene {
         this.player2.setCollideWorldBounds(true);
 
         // Ajust del collider
-        this.player2.body.setSize(70, 180);
-        this.player2.body.setOffset(50, 110);
+        this.player2.body.setSize(55, 170);
+        this.player2.body.setOffset(58, 145);
 
         // COL·LISIONS
         this.physics.add.collider(this.player1, this.platforms); // Definim les col·lisions entre el jugador 1 i les plataformes creades
@@ -156,7 +156,7 @@ export default class EscenaJuego extends Phaser.Scene {
                 }
             ),
             frameRate: 8,
-            repeat: -1
+            repeat: 0
         });
 
         // ANIMACIONS PLAYER 2
@@ -199,7 +199,7 @@ export default class EscenaJuego extends Phaser.Scene {
                 }
             ),
             frameRate: 8,
-            repeat: -1
+            repeat: 0
         });
         
         // ARGUMENTS
@@ -334,7 +334,7 @@ export default class EscenaJuego extends Phaser.Scene {
             }
 
             // COMPROVEM EL SALT
-            if(this.keys1.up.isDown && this.player1.body.blocked.down){
+            if(Phaser.Input.Keyboard.JustDown(this.keys1.up) && this.player1.blocked.down){
                 this.player1.setVelocityY(-this.jumpForce);
 
                 if(this.player1.anims.currentAnim?.key !== 'player1_jump'){
@@ -352,7 +352,7 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.player2.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
                 
                 if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
-                    this.player2.anims.play('player1_walk');
+                    this.player2.anims.play('player2_walk');
                 }
 
                 this.player2.setFlipX(true); // Girem el sprite del jugador 2 cap a l'esquerra
@@ -361,7 +361,7 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.player2.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
                 
                 if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
-                    this.player2.anims.play('player1_walk');
+                    this.player2.anims.play('player2_walk');
                 }
 
                 this.player2.setFlipX(false); // Girem el sprite del jugador 2 cap a la dreta
@@ -374,7 +374,7 @@ export default class EscenaJuego extends Phaser.Scene {
             } 
 
             // COMPROVEM SALT
-            if(this.keys2.up.isDown && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
+            if(Phaser.Input.Keyboard.JustDown(this.keys2.up) && this.player2.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
                 this.player2.setVelocityY(-this.jumpForce);
                 if(this.player2.anims.currentAnim?.key !== 'player2_jump'){
                     this.player2.anims.play('player2_jump');
@@ -417,7 +417,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // Creem un argument com un rectangle de color verd
         let argument = this.add.image(x, 0, 'argument');
-        argument.setScale(0.2); // Reduïm la mida de l'argument per fer-lo més visible i manejable
+        argument.setScale(0.5); // Reduïm la mida de l'argument per fer-lo més visible i manejable
 
         // Afegim físiques a l'argument
         this.physics.add.existing(argument);
