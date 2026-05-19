@@ -300,84 +300,75 @@ export default class EscenaJuego extends Phaser.Scene {
 
     update(){
         // MOVIMENT JUGADOR 1
-        this.player1.setVelocityX(0); // Quan el jugador 1 no prem cap tecla no es mou
-        
-        if(!this.player1Stunned){            
+        if(!this.player1Stunned){
+            this.player1.setVelocityX(0);
+
             // Comprovem desplaçaments
             if(this.keys1.left.isDown){
                 this.player1.setVelocityX(-this.playerSpeed);
-
-                // Només reproduïm l'animació en el cas de no estar activa
-                if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
-                    this.player1.anims.play('player1_walk');
-                }
-
                 this.player1.setFlipX(true);
             }
             else if(this.keys1.right.isDown){
                 this.player1.setVelocityX(this.playerSpeed);
-
-                // Només reproduïm l'animació si no està activa
-                if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
-                    this.player1.anims.play('player1_walk');
-                }
-
                 this.player1.setFlipX(false);
             }
-            else{
-                this.player1.setVelocityX(0);
-
-                // Només reproduïm idle si no està activa
-                if(this.player1.anims.currentAnim?.key !== 'player1_idle'){
-                    this.player1.anims.play('player1_idle');
-                }
+            
+            // COMPROVEM EL SALT
+            if(Phaser.Input.Keyboard.JustDown(this.keys1.up) && this.player1.body.blocked.down){
+                this.player1.setVelocityY(-this.jumpForce);
             }
 
-            // COMPROVEM EL SALT
-            if(Phaser.Input.Keyboard.JustDown(this.keys1.up) && this.player1.blocked.down){
-                this.player1.setVelocityY(-this.jumpForce);
-
+            // ANIMACIONS
+            if(!this.player1.body.blocked.down){
                 if(this.player1.anims.currentAnim?.key !== 'player1_jump'){
-                    this.player1.anims.play('player1_jump');
+                    this.player1.anims.play('player1_jump', true);
+                }
+            }
+            else if(this.player1.body.velocity.x !== 0){
+                if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
+                    this.player1.anims.play('player1_walk', true);
+                }
+            }
+            else{
+                if(this.player1.anims.currentAnim?.key !== 'player1_idle'){
+                    this.player1.anims.play('player1_idle', true);
                 }
             }
         }
 
         // MOVIMENT JUGADOR 2
-        this.player2.setVelocityX(0); // Quan el jugador 2 no prem cap tecla no es mou
-        
         if(!this.player2Stunned){
+            this.player2.setVelocityX(0);
+
             // Comprovem desplaçaments
             if(this.keys2.left.isDown){
                 this.player2.setVelocityX(-this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa esquerra es desplaçarà a l'esquerra
-                
-                if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
-                    this.player2.anims.play('player2_walk');
-                }
-
                 this.player2.setFlipX(true); // Girem el sprite del jugador 2 cap a l'esquerra
             }
             else if(this.keys2.right.isDown){
                 this.player2.setVelocityX(this.playerSpeed); // Si el jugador 2 prem la tecla de la fletxa dreta es desplaçarà cap a la dreta
-                
-                if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
-                    this.player2.anims.play('player2_walk');
-                }
-
                 this.player2.setFlipX(false); // Girem el sprite del jugador 2 cap a la dreta
             }
-            else{
-                this.player2.setVelocityX(0);
-                if(this.player2.anims.currentAnim?.key !== 'player2_idle'){
-                    this.player2.anims.play('player2_idle', true); // Si el jugador 2 no prem cap tecla de desplaçament, s'atura l'animació de caminar
-                }  
-            } 
 
             // COMPROVEM SALT
-            if(Phaser.Input.Keyboard.JustDown(this.keys2.up) && this.player2.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
+            if(Phaser.Input.Keyboard.JustDown(this.keys2.up) && this.player2.body.blocked.down){ // Si el jugador 2 prem la tecla de fletxa amunt i està tocant el terra o una plataforma, saltarà cap amunt
                 this.player2.setVelocityY(-this.jumpForce);
+            }
+
+            // ANIMACIONS
+            if(!this.player2.body.blocked.down){
                 if(this.player2.anims.currentAnim?.key !== 'player2_jump'){
-                    this.player2.anims.play('player2_jump');
+                    this.player2.anims.play('player2_jump', true);
+                }
+            }
+            else if(this.player2.body.velocity.x !== 0){
+                if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
+                    this.player2.anims.play('player2_walk', true);
+                }
+            }
+            else{
+                if(this.player2.anims.currentAnim?.key !== 'player2_idle'){
+                    this.player2.anims.play('player2_idle', true);
                 }
             }
         }

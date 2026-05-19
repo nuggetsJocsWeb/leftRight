@@ -21,7 +21,7 @@ export default class EscenaAlias extends Phaser.Scene{
                     </div>
                     
                     <div style="display: flex; flex-direction: column;">
-                        <label>Jugador 2 (Rojo):</label>
+                        <label>Jugador 2 (Verde):</label>
                         <input type="text" id="input-alias2" placeholder="Nombre..." style="padding: 10px; border-radius: 5px; border: none; font-size: 1.2rem;">
                     </div>
                 </div>
