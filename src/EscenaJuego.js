@@ -12,21 +12,28 @@ export default class EscenaJuego extends Phaser.Scene {
         // CONSTANTS
         this.playerSpeed = 300;
         this.jumpForce = 500;
+
         this.argumentPoints = 5; // Punts que rep un jugador per cada argument recollit
         this.argumentFallSpeed = 150; // Velocitat inicial a la que cauen els arguments
         this.argumentLifeSpan = 5000; // Temps (en ms) què un argument roman al joc abans de desaparèixer
         
+        this.gameTime = 240;  // Durada de la partida (4 minuts)
+
         // PUNTUACIONS INICIALS DELS JUGADORS
         this.score1 = 0;
         this.score2 = 0;
 
-        // TEXT DE LES PUNTUACIONS
+        // TEXT DE LES PUNTUACIONS I DEL TEMPORITZADOR DE LA PARTIDA
         this.scoreText1 = this.add.text(16, 16, this.alias1 + ": 0", { fontSize: '20px', fill: '#000' });
         this.scoreText2 = this.add.text(750, 16, this.alias2 + ": 0", { fontSize: '20px', fill: '#000' });
 
-        // FIXEM ELS TEXTOS DE LES PUNTUACIONS A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
+        this.timerText = this.add.text(400, 16, "Temps: 4:00", { fontSize: '20px', fill: '#000' });
+        this.timerText.setOrigin(0.5, 0); // Centrem el text del temporitzador a la posició definida
+
+        // FIXEM ELS TEXTOS DE LES PUNTUACIONS I EL TEMPORITZADOR A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
         this.scoreText1.setScrollFactor(0);
         this.scoreText2.setScrollFactor(0);
+        this.timerText.setScrollFactor(0);
 
         // PLATAFORMES
         this.platforms = this.physics.add.staticGroup(); // Creem un grup de plataformes immòbils (a part de no tenir moviment,tampoc tenen gravetat)
@@ -133,6 +140,31 @@ export default class EscenaJuego extends Phaser.Scene {
 
         this.hammerText1.setDepth(10);
         this.hammerText2.setDepth(10);
+
+        // COMPTE ENRERE DEL JOC
+        this.time.addEvent({
+            delay: 1000, // Actualitzem el temporitzador cada segon
+            callback: () => {
+                this.gameTime --; // Restem un segon al temps total de la partida
+
+                // Convertim el temps restant a minuts i segons
+                const minutes = Math.floor(this.gameTime / 60);
+                const seconds = this.gameTime % 60;
+
+                // Afegim un zero davant dels segons si són menors a 10 
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                
+                // Actualitzem el text del temporitzador
+                this.timerText.setText("Temps: " + minutes + ":" + seconds);
+
+                // Comprovem si finalitza la partida
+                if(this.gameTime <= 0){
+                    this.endGame();
+                }
+            },
+            callbackScope: this,
+            loop: true
+        });
     }
 
     update(){
@@ -193,8 +225,8 @@ export default class EscenaJuego extends Phaser.Scene {
         });
 
         // POSICIONAR TEXT
-        this.hammerText1.setPosition(this.player1.x - 10, this.player1.y - 50);
-        this.hammerText2.setPosition(this.player2.x - 10, this.player2.y - 50);
+        this.hammerText1.setPosition(this.player1.x - 20, this.player1.y - 50);
+        this.hammerText2.setPosition(this.player2.x - 20, this.player2.y - 50);
 
         // TEXT MARTELL EQUIPAT
         this.hammerText1.setVisible(this.player1HasHammer);
@@ -210,12 +242,13 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // Afegim físiques a l'argument
         this.physics.add.existing(argument);
-        argument.body.setGravityY(this.argumentFallSpeed); // Fem que l'argument caigui a la velocitat definida per la variable argumentFallSpeed
-        argument.body.setBounce(0); // Eliminem el possible rebot dels arguments en col·lisionar amb les plataformes
 
-        // Afegim l'argument al grup d'arguments
-        this.arguments.add(argument);
+        this.arguments.add(argument); // Afegim l'argument al grup d'arguments
 
+        argument.body.setVelocityY(this.argumentFallSpeed); // Fem que l'argument caigui a la velocitat definida per la variable argumentFallSpeed
+        argument.body.setBounce(0.2); // Afegim una mica de rebot als arguments per fer que caiguin de manera més natural
+        argument.body.setCollideWorldBounds(true); // Evitem que els arguments surtin dels límits del joc
+        
         // Determinem les col·lisions entre l'argument i les plataformes (perquè caiguin i es quedin a les plataformes en comptes de travessar-les)
         this.physics.add.collider(argument, this.platforms);
 
@@ -236,12 +269,12 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // ACTUALITZEM LA PUNTUACIÓ DEL JUGADOR QUE HA RECOLLIT L'ARGUMENT
         if(player === this.player1){
-            this.score1 += 5; // El jugador 1 rep 5 punts per cada argument recollit
+            this.score1 += this.argumentPoints; // El jugador 1 rep 5 punts per cada argument recollit
             this.scoreText1.setText(this.alias1 + ": " + this.score1); // Actualitzem el text de la puntuació que es mostra per pantalla del jugador 1
             console.log("Puntuació " + this.alias1 + ": " + this.score1);
         }
         else{
-            this.score2 += 5; // El jugador 2 rep 5 punts per cada argument recollit
+            this.score2 += this.argumentPoints; // El jugador 2 rep 5 punts per cada argument recollit
             this.scoreText2.setText(this.alias2 + ": " + this.score2); // Actualitzem el text de la puntuació que es mostra per pantalla del jugador 2
             console.log("Puntuació " + this.alias2 + ": " + this.score2);
         }
@@ -260,6 +293,7 @@ export default class EscenaJuego extends Phaser.Scene {
                 
                 // Afegim físiques al martell
                 this.hammer.body.setBounce(0); // Eliminem el rebot del martell al col·lisionar
+                this.hammer.body.setCollideWorldBounds(true);
                 this.physics.add.collider(this.hammer, this.platforms);
 
                 this.physics.add.overlap(
@@ -388,5 +422,31 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.canStealHammer = true;
             });
         }
+    }
+
+    // FINAL DE LA PARTIDA
+    endGame(){
+        this.scene.pause();
+
+        let winnerText = "";
+        if(this.score1 > this.score2){
+            winnerText = "La justicia es en tus manos " + this.alias1 + "!";
+        }
+        else if(this.score2 > this.score1){
+            winnerText = "La justicia es en tus manos " + this.alias2 + "!";
+        }
+        else{
+            winnerText = "Sea la justicia para todos! Bien jugado!";
+        }
+
+        // Mostrem text del resultat final
+        this.add.text(
+            this.scale.width / 2,
+            this.scale.height / 2,
+            winnerText, {
+                fontSize: '48px',
+                fill: '#000',
+                backgroundColor: '#ffffff'
+        }).setOrigin(0.5);
     }
 }
