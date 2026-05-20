@@ -58,7 +58,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.argumentFallSpeed = this.initialFallSpeed; // Velocitat inicial a la que cauen els arguments
         this.argumentLifeSpan = 5000; // Temps (en ms) què un argument roman al joc abans de desaparèixer
         
-        this.gameTime = 240;  // Durada de la partida (4 minuts)
+        this.gameTime = 180;  // Durada de la partida (3 minuts)
 
         // PUNTUACIONS INICIALS DELS JUGADORS
         this.score1 = 0;
@@ -238,9 +238,9 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // Augment de la dificultat modificant la velocitat de caiguda dels arguments
         this.time.addEvent({
-            delay: 30000,
+            delay: 10000,
             callback: () =>{
-                this.argumentFallSpeed += 40;
+                this.argumentFallSpeed *= 1.2;
                 if(this.argumentLifeSpan > 2000){
                     this.argumentLifeSpan -= 500;
                 }
@@ -606,10 +606,10 @@ export default class EscenaJuego extends Phaser.Scene {
 
         let winnerText = "";
         if(this.score1 > this.score2){
-            winnerText = "La justicia es en tus manos " + this.alias1 + "!";
+            winnerText = "La justicia está en tus manos " + this.alias1 + "!";
         }
         else if(this.score2 > this.score1){
-            winnerText = "La justicia es en tus manos " + this.alias2 + "!";
+            winnerText = "La justicia está en tus manos " + this.alias2 + "!";
         }
         else{
             winnerText = "Sea la justicia para todos! Bien jugado!";
@@ -620,7 +620,7 @@ export default class EscenaJuego extends Phaser.Scene {
             this.scale.width / 2,
             this.scale.height / 2,
             winnerText, {
-                fontSize: '48px',
+                fontSize: '36px',
                 color: '#000',
         }).setOrigin(0.5);
     }
