@@ -9,17 +9,17 @@ export default class EscenaJuego extends Phaser.Scene {
             'player1',
             'assets/spritesheetJug1.png',
             {
-                frameWidth: 169,
-                frameHeight: 296
+                frameWidth: 192,
+                frameHeight: 320
             }
         );
 
         this.load.spritesheet(
             'player2',
-            'assets/spritesheetJug2.png',
+            'assets/spritesheetJug1.png',
             {
-                frameWidth: 169,
-                frameHeight: 296
+                frameWidth: 192,
+                frameHeight: 320
             }
         );
 
