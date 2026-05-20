@@ -29,6 +29,16 @@ export default class EscenaJuego extends Phaser.Scene {
             'assets/martell.png'
         );
 
+        // Animació martell
+        this.load.spritesheet(
+            'hammerJug2',
+            'assets/spritesheetMartellJug2.png',
+            {
+                frameWidth: 636,
+                frameHeight: 283
+            }
+        );
+
         // ARGUMENT
         this.load.image(
             'argument',
@@ -168,6 +178,26 @@ export default class EscenaJuego extends Phaser.Scene {
             repeat: 0
         });
 
+        this.anims.create({
+            key: 'player1_hammer_spin',
+            frames: this.anims.generateFrameNumbers(
+                'hammerJug2', 
+                {
+                    start: 0,
+                    end: 6
+                }
+            ),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        // Quan acaba l'animació de l'atac amb el martell torna a idle
+        this.player1.on('animationcomplete', (anim) => {
+            if(anim.key === 'player1_hammer_spin'){
+                this.player1.play('player1_idle');
+            }
+        });
+
         // ANIMACIONS PLAYER 2
         // Idle
         this.anims.create({
@@ -209,6 +239,26 @@ export default class EscenaJuego extends Phaser.Scene {
             ),
             frameRate: 8,
             repeat: 0
+        });
+
+        this.anims.create({
+            key: 'player2_hammer_spin',
+            frames: this.anims.generateFrameNumbers(
+                'hammerJug2', 
+                {
+                    start: 0,
+                    end: 6
+                }
+            ),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        // Quan acaba l'animació de l'atac amb el martell torna a idle
+        this.player2.on('animationcomplete', (anim) => {
+            if(anim.key === 'player2_hammer_spin'){
+                this.player2.play('player2_idle');
+            }
         });
         
         // ARGUMENTS
@@ -336,19 +386,21 @@ export default class EscenaJuego extends Phaser.Scene {
             }
 
             // ANIMACIONS
-            if(!this.player1.body.blocked.down){
-                if(this.player1.anims.currentAnim?.key !== 'player1_jump'){
-                    this.player1.anims.play('player1_jump', true);
+            if(this.player1.anims.currentAnim?.key !== 'player1_hammer_spin'){
+                if(!this.player1.body.blocked.down){
+                    if(this.player1.anims.currentAnim?.key !== 'player1_jump'){
+                        this.player1.anims.play('player1_jump', true);
+                    }
                 }
-            }
-            else if(this.player1.body.velocity.x !== 0){
-                if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
-                    this.player1.anims.play('player1_walk', true);
+                else if(this.player1.body.velocity.x !== 0){
+                    if(this.player1.anims.currentAnim?.key !== 'player1_walk'){
+                        this.player1.anims.play('player1_walk', true);
+                    }
                 }
-            }
-            else{
-                if(this.player1.anims.currentAnim?.key !== 'player1_idle'){
-                    this.player1.anims.play('player1_idle', true);
+                else{
+                    if(this.player1.anims.currentAnim?.key !== 'player1_idle'){
+                        this.player1.anims.play('player1_idle', true);
+                    }
                 }
             }
         }
@@ -373,28 +425,32 @@ export default class EscenaJuego extends Phaser.Scene {
             }
 
             // ANIMACIONS
-            if(!this.player2.body.blocked.down){
-                if(this.player2.anims.currentAnim?.key !== 'player2_jump'){
-                    this.player2.anims.play('player2_jump', true);
+            if(this.player2.anims.currentAnim?.key !== 'player2_hammer_spin'){
+                if(!this.player2.body.blocked.down){
+                    if(this.player2.anims.currentAnim?.key !== 'player2_jump'){
+                        this.player2.anims.play('player2_jump', true);
+                    }
                 }
-            }
-            else if(this.player2.body.velocity.x !== 0){
-                if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
-                    this.player2.anims.play('player2_walk', true);
+                else if(this.player2.body.velocity.x !== 0){
+                    if(this.player2.anims.currentAnim?.key !== 'player2_walk'){
+                        this.player2.anims.play('player2_walk', true);
+                    }
                 }
-            }
-            else{
-                if(this.player2.anims.currentAnim?.key !== 'player2_idle'){
-                    this.player2.anims.play('player2_idle', true);
+                else{
+                    if(this.player2.anims.currentAnim?.key !== 'player2_idle'){
+                        this.player2.anims.play('player2_idle', true);
+                    }
                 }
             }
         }
         
         // ATACS
         if(Phaser.Input.Keyboard.JustDown(this.keys1.attack) && this.player1HasHammer && !this.player1Stunned){
+            this.player1.play('hammer_spin', true);
             this.attackPlayer(this.player1, this.player2);
         }
         else if(Phaser.Input.Keyboard.JustDown(this.keys2.attack) && this.player2HasHammer && !this.player2Stunned){
+            this.player2.play('hammer_spin', true);
             this.attackPlayer(this.player2, this.player1);
         }
 
@@ -543,7 +599,7 @@ export default class EscenaJuego extends Phaser.Scene {
                     this.player1Stunned = true;
                     console.log(this.alias1 + " està atordit!");
 
-                    this.time.delayedCall(2000, () => {
+                    this.time.delayedCall(4000, () => {
                         this.player1Stunned = false;
                     });
                 }
@@ -553,7 +609,7 @@ export default class EscenaJuego extends Phaser.Scene {
                     this.player2Stunned = true;
                     console.log(this.alias2 + " està atordit!");
 
-                    this.time.delayedCall(2000, () => {
+                    this.time.delayedCall(4000, () => {
                         this.player2Stunned = false;
                     });
                 }
