@@ -107,6 +107,7 @@ export default class EscenaJuego extends Phaser.Scene {
         
         // JUGADOR 1
         this.player1 = this.physics.add.sprite(200, 100, 'player1');
+        this.player1.setOrigin(0.5, 0.5);
 
         this.player1.setScale(0.35);
         this.player1.setCollideWorldBounds(true);
@@ -117,6 +118,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // JUGADOR 2
         this.player2 = this.physics.add.sprite(800,100,'player2');
+        this.player2.setOrigin(0.5, 0.5);
 
         this.player2.setScale(0.35);
         this.player2.setCollideWorldBounds(true);
@@ -200,6 +202,14 @@ export default class EscenaJuego extends Phaser.Scene {
             repeat: 0
         });
 
+        // Fixem el pivot dels frames del martell del jugador 1
+        const anim1 = this.anims.get('player1_hammer_spin');
+            anim1.frames.forEach(f => {
+                f.frame.customPivotX = 0.5;
+                f.frame.customPivotY = 0.5;
+            }
+        );
+
         // Quan acaba l'animació de l'atac amb el martell torna a idle
         this.player1.on('animationcomplete', (anim) => {
             if(anim.key === 'player1_hammer_spin'){
@@ -267,6 +277,15 @@ export default class EscenaJuego extends Phaser.Scene {
             frameRate: 10,
             repeat: 0
         });
+
+        // Fixem el pivot dels frames del martell del jugador 2
+        const anim2 = this.anims.get('player2_hammer_spin');
+            anim2.frames.forEach(f => {
+                f.frame.customPivotX = 0.5;
+                f.frame.customPivotY = 0.5;
+            }
+        );
+
 
         // Quan acaba l'animació de l'atac amb el martell torna a idle
         this.player2.on('animationcomplete', (anim) => {
