@@ -66,9 +66,12 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // TEXT DE LES PUNTUACIONS I DEL TEMPORITZADOR DE LA PARTIDA
         this.scoreText1 = this.add.text(16, 16, this.alias1 + ": 0", { fontSize: '20px', color: '#000' });
-        this.scoreText2 = this.add.text(750, 16, this.alias2 + ": 0", { fontSize: '20px', color: '#000' });
+        this.scoreText1.setOrigin(0,0);
 
-        this.timerText = this.add.text(400, 16, "Temps: 3:00", { fontSize: '20px', color: '#000' });
+        this.scoreText2 = this.add.text(this.scale.width - 16, 16, this.alias2 + ": 0", { fontSize: '20px', color: '#000' });
+        this.scoreText2.setOrigin(1,0);
+
+        this.timerText = this.add.text(this.scale.width / 2, 16, "Temps: 3:00", { fontSize: '20px', color: '#000' });
         this.timerText.setOrigin(0.5, 0); // Centrem el text del temporitzador a la posició definida
 
         // FIXEM ELS TEXTOS DE LES PUNTUACIONS I EL TEMPORITZADOR A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
