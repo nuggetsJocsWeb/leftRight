@@ -3,6 +3,7 @@ import EscenaJuegoUnJugador from './EscenaJuegoUnJugador.js';
 import EscenaSeleccion from './EscenaSeleccion.js';
 import EscenaDificultad from './EscenaDificultad.js';
 import EscenaAlias from './EscenaAlias.js';
+import EscenaPausa from './EscenaPausa';
 
 class EscenaMenu extends Phaser.Scene {
     constructor() {
@@ -70,7 +71,7 @@ const config = {
     dom: {
         createContainer: true
     },
-    scene: [EscenaMenu, EscenaJuego, EscenaSeleccion, EscenaDificultad, EscenaJuegoUnJugador, EscenaAlias]
+    scene: [EscenaMenu, EscenaJuego, EscenaSeleccion, EscenaDificultad, EscenaJuegoUnJugador, EscenaAlias, EscenaPausa]
 };
 
 const game = new Phaser.Game(config); 
