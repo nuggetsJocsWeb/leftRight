@@ -446,11 +446,11 @@ export default class EscenaJuego extends Phaser.Scene {
         
         // ATACS
         if(Phaser.Input.Keyboard.JustDown(this.keys1.attack) && this.player1HasHammer && !this.player1Stunned){
-            this.player1.play('hammer_spin', true);
+            this.player1.play('player1_hammer_spin', true);
             this.attackPlayer(this.player1, this.player2);
         }
         else if(Phaser.Input.Keyboard.JustDown(this.keys2.attack) && this.player2HasHammer && !this.player2Stunned){
-            this.player2.play('hammer_spin', true);
+            this.player2.play('player2_hammer_spin', true);
             this.attackPlayer(this.player2, this.player1);
         }
 
