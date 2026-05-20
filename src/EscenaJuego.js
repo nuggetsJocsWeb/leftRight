@@ -151,8 +151,8 @@ export default class EscenaJuego extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers(
                 'player1',
                 {
-                    start: 15,
-                    end: 19
+                    start: 10,
+                    end: 14
                 }
             ),
             frameRate: 8,
