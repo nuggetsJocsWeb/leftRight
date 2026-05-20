@@ -16,7 +16,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
         this.load.spritesheet(
             'player2',
-            'assets/spritesheetJug1.png',
+            'assets/spritesheetJug2.png',
             {
                 frameWidth: 192,
                 frameHeight: 320
@@ -33,6 +33,12 @@ export default class EscenaJuego extends Phaser.Scene {
         this.load.image(
             'argument',
             'assets/argument.png'
+        );
+
+        // PLATAFORMA
+        this.load.image(
+            'platform',
+            'assets/platforms.png'
         );
     }
 
@@ -73,9 +79,9 @@ export default class EscenaJuego extends Phaser.Scene {
         // PLATAFORMES
         this.platforms = this.physics.add.staticGroup(); // Creem un grup de plataformes immòbils (a part de no tenir moviment,tampoc tenen gravetat)
 
-        this.platforms.create(500,700,null).setDisplaySize(1000,50).refreshBody(); // Creem una plataforma de terra
-        this.platforms.create(300,500,null).setDisplaySize(300,20).refreshBody(); // Creem una plataforma amb alçada
-        this.platforms.create(700,350,null).setDisplaySize(300,20).refreshBody();
+        this.platforms.create(500,700,'platform').setDisplaySize(1000,50).refreshBody(); // Creem una plataforma de terra
+        this.platforms.create(300,500,'platform').setDisplaySize(300,20).refreshBody(); // Creem una plataforma amb alçada
+        this.platforms.create(700,350,'platform').setDisplaySize(300,20).refreshBody();
         
         // JUGADOR 1
         this.player1 = this.physics.add.sprite(200, 100, 'player1');
