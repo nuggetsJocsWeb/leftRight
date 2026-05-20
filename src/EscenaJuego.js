@@ -9,8 +9,8 @@ export default class EscenaJuego extends Phaser.Scene {
             'player1',
             'assets/spritesheetJug1.png',
             {
-                frameWidth: 172,
-                frameHeight: 320
+                frameWidth: 169,
+                frameHeight: 296
             }
         );
 
@@ -18,8 +18,8 @@ export default class EscenaJuego extends Phaser.Scene {
             'player2',
             'assets/spritesheetJug2.png',
             {
-                frameWidth: 172,
-                frameHeight: 320
+                frameWidth: 169,
+                frameHeight: 296
             }
         );
 
@@ -59,10 +59,10 @@ export default class EscenaJuego extends Phaser.Scene {
         this.score2 = 0;
 
         // TEXT DE LES PUNTUACIONS I DEL TEMPORITZADOR DE LA PARTIDA
-        this.scoreText1 = this.add.text(16, 16, this.alias1 + ": 0", { fontSize: '20px', fill: '#000' });
-        this.scoreText2 = this.add.text(750, 16, this.alias2 + ": 0", { fontSize: '20px', fill: '#000' });
+        this.scoreText1 = this.add.text(16, 16, this.alias1 + ": 0", { fontSize: '20px', color: '#000' });
+        this.scoreText2 = this.add.text(750, 16, this.alias2 + ": 0", { fontSize: '20px', color: '#000' });
 
-        this.timerText = this.add.text(400, 16, "Temps: 4:00", { fontSize: '20px', fill: '#000' });
+        this.timerText = this.add.text(400, 16, "Temps: 4:00", { fontSize: '20px', color: '#000' });
         this.timerText.setOrigin(0.5, 0); // Centrem el text del temporitzador a la posició definida
 
         // FIXEM ELS TEXTOS DE LES PUNTUACIONS I EL TEMPORITZADOR A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
@@ -615,7 +615,7 @@ export default class EscenaJuego extends Phaser.Scene {
             this.scale.height / 2,
             winnerText, {
                 fontSize: '48px',
-                fill: '#000',
+                color: '#000',
         }).setOrigin(0.5);
     }
 }
