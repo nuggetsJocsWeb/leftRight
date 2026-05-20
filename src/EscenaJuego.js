@@ -108,22 +108,22 @@ export default class EscenaJuego extends Phaser.Scene {
         // JUGADOR 1
         this.player1 = this.physics.add.sprite(200, 100, 'player1');
 
-        this.player1.setScale(0.3);
+        this.player1.setScale(0.35);
         this.player1.setCollideWorldBounds(true);
 
         // Ajust del collider
-        this.player1.body.setSize(55, 170);
-        this.player1.body.setOffset(58, 145);
+        this.player1.body.setSize(60, 180);
+        this.player1.body.setOffset(55, 140);
 
         // JUGADOR 2
         this.player2 = this.physics.add.sprite(800, 100, 'player2');
 
-        this.player2.setScale(0.3);
+        this.player2.setScale(0.35);
         this.player2.setCollideWorldBounds(true);
 
         // Ajust del collider
-        this.player2.body.setSize(55, 170);
-        this.player2.body.setOffset(58, 145);
+        this.player2.body.setSize(60, 180);
+        this.player2.body.setOffset(55, 140);
 
         // COL·LISIONS
         this.physics.add.collider(this.player1, this.platforms); // Definim les col·lisions entre el jugador 1 i les plataformes creades
@@ -206,8 +206,8 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.player1.play('player1_idle');
 
                 // Restaurar collider
-                this.player1.body.setSize(55, 170);
-                this.player1.body.setOffset(58, 145);
+                this.player1.body.setSize(60,180);
+                this.player1.body.setOffset(55,140);
 
                 this.player1.body.updateFromGameObject();
             }
@@ -275,8 +275,8 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.player2.play('player2_idle');
                 
                 // Restaurar collider
-                this.player2.body.setSize(55, 170);
-                this.player2.body.setOffset(58, 145);
+                this.player2.body.setSize(60,180);
+                this.player2.body.setOffset(55,140);
                 this.player2.body.updateFromGameObject();
             }
         });
@@ -664,27 +664,17 @@ export default class EscenaJuego extends Phaser.Scene {
 
     playHammerAttack(player, playerKey){
         // Aturem moviment durant l'atac
-        player.setVelocityX(0);
+        player.setVelocity(0, player.body.velocity.y);
 
         // Mantenim colliders
-        player.body.setSize(55,170);
-        player.body.setOffset(58,145);
+        player.body.setSize(60,180);
+        player.body.setOffset(55,140);
 
-        // Escala una mica més gran durant l'atac
-        player.setScale(0.4);
+        // Actualitzem el body
+        player.body.updateFromGameObject();
 
         // Reproduïm animació d'atac
         player.play(playerKey + '_hammer_spin', true);
-
-        // Tornem el personatge a l'escala normal
-        player.once('animationcomplete', () => {
-            player.setScale(0.3);
-
-            // Reforcem collider
-            player.body.setSize(55, 170);
-            player.body.setOffset(58, 145);
-            player.body.updateFromGameObject();
-        });
     }
 
     // COMPROVAR ROBATORI MARTELL
