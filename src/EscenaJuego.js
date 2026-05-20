@@ -608,7 +608,6 @@ export default class EscenaJuego extends Phaser.Scene {
 
             // Aturem la víctima
             victim.setVelocity(0,0);
-            victim.body.enable = false;
 
             // La deixem en idle
             if(victim === this.player1){
@@ -646,16 +645,8 @@ export default class EscenaJuego extends Phaser.Scene {
         // Aturem moviment durant l'atac
         player.setVelocityX(0);
 
-        // Fem l'animació més gran
-        player.setScale(0.4);
-
         // Reproduïm animació d'atac
         player.play(playerKey + '_hammer_spin', true);
-
-        // Tornem a la mida normal
-        player.once('animationcomplete', () => {
-            player.setScale(0.3);
-        });
     }
 
     // COMPROVAR ROBATORI MARTELL
