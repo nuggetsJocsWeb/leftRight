@@ -621,6 +621,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
                     this.time.delayedCall(4000, () => {
                         this.player1Stunned = false;
+                        this.player1.play('player1_idle', true);
                     });
                 }
             }
@@ -634,6 +635,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
                     this.time.delayedCall(4000, () => {
                         this.player2Stunned = false;
+                        this.player2.play('player2_idle', true);
                     });
                 }
             }
@@ -644,8 +646,16 @@ export default class EscenaJuego extends Phaser.Scene {
         // Aturem moviment durant l'atac
         player.setVelocityX(0);
 
+        // Fem l'animació més gran
+        player.setScale(0.4);
+
         // Reproduïm animació d'atac
         player.play(playerKey + '_hammer_spin', true);
+
+        // Tornem a la mida normal
+        player.once('animationcomplete', () => {
+            player.setScale(0.3);
+        });
     }
 
     // COMPROVAR ROBATORI MARTELL
