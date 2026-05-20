@@ -9,10 +9,10 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.jumpForce = 500;
 
         // CONTROLS JUGADOR
-        this.keys = this.input.keyboard.addKeys({
-            left: Phaser.Input.keyboard.KeyCodes.A,
-            right: Phaser.Input.keyboard.KeyCodes.D,
-            up: Phaser.Input.keyboard.KeyCodes.W
+        this.keys = this.input.Keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            up: Phaser.Input.Keyboard.KeyCodes.W
         });
 
         // ELEMENTS PUNTUACIÓ

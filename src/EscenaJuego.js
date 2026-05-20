@@ -31,6 +31,15 @@ export default class EscenaJuego extends Phaser.Scene {
 
         // Animació martell
         this.load.spritesheet(
+            'hammerJug1',
+            'assets/spritesheetMartellJug1.png',
+            {
+                frameWidth: 636,
+                frameHeight: 283
+            }
+        );
+
+        this.load.spritesheet(
             'hammerJug2',
             'assets/spritesheetMartellJug2.png',
             {
@@ -181,7 +190,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.anims.create({
             key: 'player1_hammer_spin',
             frames: this.anims.generateFrameNumbers(
-                'hammerJug2', 
+                'hammerJug1', 
                 {
                     start: 0,
                     end: 6
@@ -367,7 +376,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
     update(){
         // MOVIMENT JUGADOR 1
-        if(!this.player1Stunned){
+        if(!this.player1Stunned && this.player1.anims.currentAnim?.key !== 'player1_hammer_spin'){
             this.player1.setVelocityX(0);
 
             // Comprovem desplaçaments
@@ -406,7 +415,7 @@ export default class EscenaJuego extends Phaser.Scene {
         }
 
         // MOVIMENT JUGADOR 2
-        if(!this.player2Stunned){
+        if(!this.player2Stunned && this.player2.anims.currentAnim?.key !== 'player2_hammer_spin'){
             this.player2.setVelocityX(0);
 
             // Comprovem desplaçaments
@@ -446,11 +455,11 @@ export default class EscenaJuego extends Phaser.Scene {
         
         // ATACS
         if(Phaser.Input.Keyboard.JustDown(this.keys1.attack) && this.player1HasHammer && !this.player1Stunned){
-            this.player1.play('player1_hammer_spin', true);
+            this.playHammerAttack(this.player1, 'player1');
             this.attackPlayer(this.player1, this.player2);
         }
         else if(Phaser.Input.Keyboard.JustDown(this.keys2.attack) && this.player2HasHammer && !this.player2Stunned){
-            this.player2.play('player2_hammer_spin', true);
+            this.playHammerAttack(this.player2, 'player2');
             this.attackPlayer(this.player2, this.player1);
         }
 
@@ -588,15 +597,26 @@ export default class EscenaJuego extends Phaser.Scene {
     // ATACAR AMB EL MARTELL
     attackPlayer(attacker, victim){
         const distance = Phaser.Math.Distance.Between(
-            attacker.x, attacker.y, 
+            attacker.x, attacker.y,
             victim.x, victim.y
         );
 
-        // En el cas de que els jugadors estiguin a una distància menor a 50 píxels, l'atac serà vàlid
-        if(distance < 50){
+        console.log("Distància atac:", distance);
+
+        // Distància vàlida
+        if(distance < 120){
+
+            // Aturem la víctima
+            victim.setVelocity(0,0);
+            victim.body.enable = false;
+
+            // La deixem en idle
             if(victim === this.player1){
+                victim.play('player1_idle', true);
+
                 if(!this.player1Stunned){
                     this.player1Stunned = true;
+
                     console.log(this.alias1 + " està atordit!");
 
                     this.time.delayedCall(4000, () => {
@@ -605,8 +625,11 @@ export default class EscenaJuego extends Phaser.Scene {
                 }
             }
             else{
+                victim.play('player2_idle', true);
+
                 if(!this.player2Stunned){
                     this.player2Stunned = true;
+
                     console.log(this.alias2 + " està atordit!");
 
                     this.time.delayedCall(4000, () => {
@@ -615,6 +638,14 @@ export default class EscenaJuego extends Phaser.Scene {
                 }
             }
         }
+    }
+
+    playHammerAttack(player, playerKey){
+        // Aturem moviment durant l'atac
+        player.setVelocityX(0);
+
+        // Reproduïm animació d'atac
+        player.play(playerKey + '_hammer_spin', true);
     }
 
     // COMPROVAR ROBATORI MARTELL
