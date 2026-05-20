@@ -68,7 +68,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.scoreText1 = this.add.text(16, 16, this.alias1 + ": 0", { fontSize: '20px', color: '#000' });
         this.scoreText2 = this.add.text(750, 16, this.alias2 + ": 0", { fontSize: '20px', color: '#000' });
 
-        this.timerText = this.add.text(400, 16, "Temps: 4:00", { fontSize: '20px', color: '#000' });
+        this.timerText = this.add.text(400, 16, "Temps: 3:00", { fontSize: '20px', color: '#000' });
         this.timerText.setOrigin(0.5, 0); // Centrem el text del temporitzador a la posició definida
 
         // FIXEM ELS TEXTOS DE LES PUNTUACIONS I EL TEMPORITZADOR A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
@@ -240,8 +240,16 @@ export default class EscenaJuego extends Phaser.Scene {
         this.time.addEvent({
             delay: 10000,
             callback: () =>{
-                this.argumentFallSpeed *= 1.2;
-                if(this.argumentLifeSpan > 2000){
+                this.argumentFallSpeed *= 1.5;
+
+                // Actualitzem la velocitat dels arguments ja existents
+                this.arguments.getChildren().forEach(argument => {
+                    if(argument.body){
+                        argument.body.setVelocityY(this.argumentFallSpeed);
+                    }
+                });
+
+                if(this.argumentLifeSpan > 1000){
                     this.argumentLifeSpan -= 500;
                 }
 
