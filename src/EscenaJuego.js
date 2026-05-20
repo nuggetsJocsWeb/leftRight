@@ -112,18 +112,18 @@ export default class EscenaJuego extends Phaser.Scene {
         this.player1.setCollideWorldBounds(true);
 
         // Ajust del collider
-        this.player1.body.setSize(60, 180);
-        this.player1.body.setOffset(55, 140);
+        this.player1.body.setSize(60,180,true);
+        this.player1.body.setOffset(55,140);
 
         // JUGADOR 2
-        this.player2 = this.physics.add.sprite(800, 100, 'player2');
+        this.player2 = this.physics.add.sprite(800,100,'player2');
 
         this.player2.setScale(0.35);
         this.player2.setCollideWorldBounds(true);
 
         // Ajust del collider
-        this.player2.body.setSize(60, 180);
-        this.player2.body.setOffset(55, 140);
+        this.player2.body.setSize(60,180,true);
+        this.player2.body.setOffset(55,140);
 
         // COL·LISIONS
         this.physics.add.collider(this.player1, this.platforms); // Definim les col·lisions entre el jugador 1 i les plataformes creades
@@ -206,10 +206,9 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.player1.play('player1_idle');
 
                 // Restaurar collider
-                this.player1.body.setSize(60,180);
+                this.player1.body.setSize(60,180,true);
                 this.player1.body.setOffset(55,140);
-
-                this.player1.body.updateFromGameObject();
+                this.player1.setDisplaySize(this.player1.displayWidth, this.player1.displayHeight);
             }
         });
 
@@ -275,9 +274,9 @@ export default class EscenaJuego extends Phaser.Scene {
                 this.player2.play('player2_idle');
                 
                 // Restaurar collider
-                this.player2.body.setSize(60,180);
+                this.player2.body.setSize(60,180,true);
                 this.player2.body.setOffset(55,140);
-                this.player2.body.updateFromGameObject();
+                this.player2.setDisplaySize(this.player2.displayWidth, this.player2.displayHeight);
             }
         });
         
@@ -664,16 +663,16 @@ export default class EscenaJuego extends Phaser.Scene {
 
     playHammerAttack(player, playerKey){
         // Aturem moviment durant l'atac
-        player.setVelocity(0, player.body.velocity.y);
+        player.setVelocityX(0);
 
         // Mantenim colliders
-        player.body.setSize(60,180);
+        player.body.setSize(60,180, true);
         player.body.setOffset(55,140);
 
-        // Actualitzem el body
-        player.body.updateFromGameObject();
+        // Evitem que Phaser reajusti la mida visual
+        player.setDisplaySize(player.displayWidth, player.displayHeight);
 
-        // Reproduïm animació d'atac
+        // Reproduïm l'animació d'atac
         player.play(playerKey + '_hammer_spin', true);
     }
 
