@@ -204,6 +204,12 @@ export default class EscenaJuego extends Phaser.Scene {
         this.player1.on('animationcomplete', (anim) => {
             if(anim.key === 'player1_hammer_spin'){
                 this.player1.play('player1_idle');
+
+                // Restaurar collider
+                this.player1.body.setSize(55, 170);
+                this.player1.body.setOffset(58, 145);
+
+                this.player1.body.updateFromGameObject();
             }
         });
 
@@ -267,6 +273,11 @@ export default class EscenaJuego extends Phaser.Scene {
         this.player2.on('animationcomplete', (anim) => {
             if(anim.key === 'player2_hammer_spin'){
                 this.player2.play('player2_idle');
+                
+                // Restaurar collider
+                this.player2.body.setSize(55, 170);
+                this.player2.body.setOffset(58, 145);
+                this.player2.body.updateFromGameObject();
             }
         });
         
@@ -372,9 +383,19 @@ export default class EscenaJuego extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
+
+        // Tecla per redirigir els jugadors a l'escena de pausa
+        this.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update(){
+        // ESCENA PAUSA
+        if(Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
+            this.scene.pause();
+            this.scene.launch('EscenaPausa');
+            return;
+        }
+
         // MOVIMENT JUGADOR 1
         if(!this.player1Stunned && this.player1.anims.currentAnim?.key !== 'player1_hammer_spin'){
             this.player1.setVelocityX(0);
@@ -645,8 +666,25 @@ export default class EscenaJuego extends Phaser.Scene {
         // Aturem moviment durant l'atac
         player.setVelocityX(0);
 
+        // Mantenim colliders
+        player.body.setSize(55,170);
+        player.body.setOffset(58,145);
+
+        // Escala una mica més gran durant l'atac
+        player.setScale(0.4);
+
         // Reproduïm animació d'atac
         player.play(playerKey + '_hammer_spin', true);
+
+        // Tornem el personatge a l'escala normal
+        player.once('animationcomplete', () => {
+            player.setScale(0.3);
+
+            // Reforcem collider
+            player.body.setSize(55, 170);
+            player.body.setOffset(58, 145);
+            player.body.updateFromGameObject();
+        });
     }
 
     // COMPROVAR ROBATORI MARTELL
