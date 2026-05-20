@@ -430,7 +430,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.arguments.add(argument); // Afegim l'argument al grup d'arguments
 
         argument.body.setVelocityY(this.argumentFallSpeed); // Fem que l'argument caigui a la velocitat definida per la variable argumentFallSpeed
-        argument.body.setBounce(0.2); // Afegim una mica de rebot als arguments per fer que caiguin de manera més natural
+        argument.body.setBounce(0); // Eliminem el rebot dels arguments 
         argument.body.setCollideWorldBounds(true); // Evitem que els arguments surtin dels límits del joc
         
         // Determinem les col·lisions entre l'argument i les plataformes (perquè caiguin i es quedin a les plataformes en comptes de travessar-les)
