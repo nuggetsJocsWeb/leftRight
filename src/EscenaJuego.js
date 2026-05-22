@@ -380,7 +380,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.hammerText2.setDepth(10);
 
         // COMPTE ENRERE DEL JOC
-        this.time.addEvent({
+        this.timerEvent = this.time.addEvent({
             delay: 1000, // Actualitzem el temporitzador cada segon
             callback: () => {
                 this.gameTime --; // Restem un segon al temps total de la partida
@@ -752,9 +752,14 @@ export default class EscenaJuego extends Phaser.Scene {
 
     // FINAL DE LA PARTIDA
     endGame(){
+        this.time.paused = true; // Pausem tots els temporitzadors
+
         this.physics.pause();
         this.anims.pauseAll();
         this.input.keyboard.enabled = false;
+
+        this.gameTime = 0;
+        this.timerText.setText("Temps: 0:00");
 
         let winnerText = "";
         if(this.score1 > this.score2){
@@ -777,6 +782,8 @@ export default class EscenaJuego extends Phaser.Scene {
                 color: '#f6f4ed',
             }
         ).setOrigin(0.5).setDepth(10);
+
+        this.time.paused = false;
 
         this.time.delayedCall(8000, () => {
             winnerTextObject.destroy(); // Esborrem el text
