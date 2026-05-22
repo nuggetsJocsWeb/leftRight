@@ -356,7 +356,7 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.time.delayedCall(8000, () => {
             textFinal.destroy(); // Esborrem el text
             this.scene.stop();
-            this.scene.start("main");
+            this.scene.start("EscenaMenu");
         });
     }
 }

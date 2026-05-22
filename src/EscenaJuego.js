@@ -778,7 +778,7 @@ export default class EscenaJuego extends Phaser.Scene {
         this.time.delayedCall(8000, () => {
             winnerTextObject.destroy(); // Esborrem el text
             this.scene.stop();
-            this.scene.start("main");
+            this.scene.start("EscenaMenu");
         });
     }
 }
