@@ -38,9 +38,12 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
     }
 
     create(){
+        this.input.keyboard.enabled = true;
+
         // CONSTANTS
         this.playerSpeed = 200;
         this.jumpForce = 400;
+        this.gameOver = false;
 
         // Dificultat
         this.difficultyLevel = 1;
@@ -287,7 +290,8 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.score = Math.max(0,this.score - this.argumentPenalty);
         this.scoreText.setText("PUNTUACIÓN: " + this.score);
 
-        if(this.score <= 0){
+        if(this.score <= 0 && !this.gameOver){
+            this.gameOver = true;
             this.endGame();
         }
     }
@@ -339,7 +343,14 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
     }
 
     endGame(){
+        if(this.gameOver){
+            return;
+        }
+
+        this.gameOver = true;
+
         this.physics.pause();
+        this.anims.pauseAll();
         this.input.keyboard.enabled = false; // Desectivem els controls
 
         let text = "¡CULPABLE! ¡Que se haga justicia!";

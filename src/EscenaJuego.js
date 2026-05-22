@@ -69,6 +69,8 @@ export default class EscenaJuego extends Phaser.Scene {
     }
 
     create(){
+        this.input.keyboard.enabled = true;
+
         // CONSTANTS
         this.playerSpeed = 300;
         this.jumpForce = 500;
@@ -751,6 +753,7 @@ export default class EscenaJuego extends Phaser.Scene {
     // FINAL DE LA PARTIDA
     endGame(){
         this.physics.pause();
+        this.anims.pauseAll();
         this.input.keyboard.enabled = false;
 
         let winnerText = "";
