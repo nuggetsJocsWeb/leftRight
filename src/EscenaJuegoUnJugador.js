@@ -345,7 +345,7 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         let text = "¡CULPABLE! ¡Que se haga justicia!";
         
         // Mostrem text del resultat final
-        this.add.text(
+        const textFinal = this.add.text(
             this.scale.width / 2,
             this.scale.height / 2,
             text, {
@@ -354,7 +354,7 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         }).setOrigin(0.5).setDepth(10);
 
         this.time.delayedCall(8000, () => {
-            text.destroy(); // Esborrem el text
+            textFinal.destroy(); // Esborrem el text
             this.scene.stop();
             this.scene.start("main");
         });
