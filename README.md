@@ -17,6 +17,7 @@ Las partidas individuales, en cambio, no disponen de temporizador, sino que prog
 Con tal de balancear el relevante aumento de velocidad del estilo multijugador, se eligió que, cuando alcanza valores altos, los argumentos sean capaces de atravesar las plataformas, hecho que los realentiza ligeramente.
 
 ## Conclusiones
+Hemos logrado desarrollar con exito un catcher game con dos modalidades de juego diferenctes. Nos hemos dado cuenta de la importancia de un correcto balanceo en los elementos de un videojuego y la dificultad de crear una curva de dificultad y evitar la frustración del jugador. Este proyecto nos ha ayudado a familiarizado con el sistema de escenas de Phaser3 y hemos aprendido la importancia de trabajar con el mismo tamaño para los spritesheet. 
 
 ## Problemas hallados
 Las animaciones han resultado ser el mayor problema durante la implementación; el cambio de tamaño de los sprites de la animación del golpe con el martillo en relación a las animaciones base causa un desplazamiento del centro del sprite que modifica los colisionadores, provocando que estos no respondan correctamente.
