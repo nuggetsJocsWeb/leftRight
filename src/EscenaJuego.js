@@ -751,7 +751,8 @@ export default class EscenaJuego extends Phaser.Scene {
     // FINAL DE LA PARTIDA
     endGame(){
         this.scene.pause();
-
+        this.input.keyboard.enabled = false;
+        
         let winnerText = "";
         if(this.score1 > this.score2){
             winnerText = "La justicia está en tus manos " + this.alias1 + "!";
@@ -767,9 +768,17 @@ export default class EscenaJuego extends Phaser.Scene {
         this.add.text(
             this.scale.width / 2,
             this.scale.height / 2,
-            winnerText, {
+            winnerText, 
+            {
                 fontSize: '36px',
                 color: '#fff5d1',
-        }).setOrigin(0.5);
+            }
+        ).setOrigin(0.5).setDepth(10);
+
+        this.time.delayedCall(8000, () => {
+            winnerText.destroy(); // Esborrem el text
+            this.scene.stop();
+            this.scene.start("main");
+        });
     }
 }

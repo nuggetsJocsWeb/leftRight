@@ -3,56 +3,145 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         super("EscenaJuegoUnJugador");
     }
 
+    preload(){
+        // SPRITESHEETS DEL JUGADOR
+        this.load.spritesheet(
+            'player',
+            'assets/spritesheetJug1.png',
+            {
+                frameWidth: 192,
+                frameHeight: 320
+            }
+        );
+
+        // ARGUMENT
+        this.load.image(
+            'argument',
+            'assets/argument.png'
+        );
+
+        // PLATAFORMA
+        this.load.image(
+            'platform',
+            'assets/platforms.png'
+        );
+
+        // BOMBA
+        this.load.image(
+            'bomb',
+            'assets/lawBook.png'
+        );
+    }
+
+    init(data = {}){
+        this.initialFallSpeed = data.argumentFallSpeed || 175;
+    }
+
     create(){
         // CONSTANTS
-        this.playerSpeed = 300;
-        this.jumpForce = 500;
+        this.playerSpeed = 200;
+        this.jumpForce = 400;
 
-        // CONTROLS JUGADOR
-        this.keys = this.input.Keyboard.addKeys({
-            left: Phaser.Input.Keyboard.KeyCodes.A,
-            right: Phaser.Input.Keyboard.KeyCodes.D,
-            up: Phaser.Input.Keyboard.KeyCodes.W
+        // Dificultat
+        this.difficultyLevel = 1;
+        this.argumentPenalty = 10;
+        this.argumentSpawnDelay = 1000;
+
+        this.argumentPoints = 5; // Punts que rep un jugador per cada argument recollit
+        this.argumentFallSpeed = this.initialFallSpeed; // Velocitat inicial a la que cauen els arguments
+
+        // PUNTUACIÓ INICIAL
+        this.score = 0;
+
+        // TEXT DE LES PUNTUACIONS I DEL TEMPORITZADOR DE LA PARTIDA
+        this.scoreText = this.add.text(16, 16, "PUNTUACIÓN: 0", { fontSize: '20px', color: '#fff5d1' });
+        this.scoreText.setOrigin(0,0);
+
+        // FIXEM ELS TEXTOS DE LES PUNTUACIONS I EL TEMPORITZADOR A LA CÀMERA (PER EVITAR QUE ES MOGUIN AMB ELS JUGADORS)
+        this.scoreText.setScrollFactor(0);
+
+        // PLATAFORMES
+        this.platforms = this.physics.add.staticGroup(); // Creem un grup de plataformes immòbils (a part de no tenir moviment,tampoc tenen gravetat)
+        this.generateRandomPlatforms(4);
+       
+        // JUGADOR
+        this.player = this.physics.add.sprite(200,100,'player');
+        this.player.setOrigin(0.5,0.5);
+
+        this.player.setScale(0.35);
+        this.player.setCollideWorldBounds(true);
+
+        // COL·LISIONS
+        this.physics.add.collider(this.player,this.platforms); // Definim les col·lisions entre el jugador i les plataformes creades
+
+        // CONTROLS JUGADOR 1
+        this.keys = this.input.keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.A, // Per desplaçar-se a l'esquerra el jugador 1 ha de polsar la tecla A
+            right: Phaser.Input.Keyboard.KeyCodes.D, // Per desplaçar-se a la dreta el jugador 1 ha de polsar la tecla D
+            up: Phaser.Input.Keyboard.KeyCodes.W // Per saltar cap amunt el jugador 1 ha de polsar la tecla W
         });
 
-        // ELEMENTS PUNTUACIÓ
-        this.score = 0;
-        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '20px', fill: '#000' });
-    
-        // PLAYER
-        this.player = this.physics.add.rectangle(100, 450, 40, 60, 0x0000ff);
-        this.physics.add.existing(this.player);
-        this.player.body.setCollideWorldBounds(true);
+        // ANIMACIONS JUGADOR 
+        // Idle
+        this.anims.create({
+            key: 'player_idle',
+            frames: this.anims.generateFrameNumbers(
+                'player',
+                {
+                    start: 0,
+                    end: 4
+                }
+            ),
+            frameRate: 5,
+            repeat: -1
+        });
 
-        // PLATFORMS
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400,500,null).setDisplaySize(1000,50).refreshBody();
-        this.platforms.create(200,300,null).setDisplaySize(300,20).refreshBody();
-        this.platforms.create(600,200,null).setDisplaySize(300,20).refreshBody();
+        // Walk
+        this.anims.create({
+            key: 'player_walk',
+            frames: this.anims.generateFrameNumbers(
+                'player',
+                {
+                    start: 5,
+                    end: 9
+                }
+            ),
+            frameRate: 10,
+            repeat: -1
+        });
 
-        // BOMB
-        this.bombs = this.physics.add.group();
-
-        // Generem bombes en una franja de temps aleatòria cada 8-30 segons
-        this.time.addEvent({
-            delay: Phaser.Math.Between(8000,30000),
-            callback: this.generateBomb,
-            callbackScope: this,
-            loop: true
+        // Jump
+        this.anims.create({
+            key: 'player_jump',
+            frames: this.anims.generateFrameNumbers(
+                'player',
+                {
+                    start: 10,
+                    end: 14
+                }
+            ),
+            frameRate: 8,
+            repeat: 0
         });
 
         // ARGUMENTS
-        this.arguments = this.physics.add.group();
-
-        // Generem arguments cada segon
-        this.time.addEvent({
-            delay: 1000,
+        this.arguments = this.physics.add.group(); // Creem un grup d'arguments
+        this.argumentSpawnTimer = this.time.addEvent({
+            delay: this.argumentSpawnDelay,
             callback: this.generateArgument,
             callbackScope: this,
             loop: true
         });
 
-        // Detectem la recollida dels arguments
+        this.physics.add.collider(
+            this.arguments,
+            this.platforms,
+            this.argumentHitsGround,
+            null,
+            this
+        );
+
+        // Detectem les col·lisions entre els arguments i el jugador (és a dir, la recollida dels arguments)
         this.physics.add.overlap(
             this.player,
             this.arguments,
@@ -60,56 +149,214 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
             null,
             this
         );
+    
+        // BOMBES
+        this.bombs = this.physics.add.group();
 
-        // COL·LISIONS
-        this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.collider(this.player, this.bombs);
+        // Generació de bombes cada 5 i 20 segons
+        this.bombTimer = this.time.addEvent({
+            delay: 5000,
+            callback: () => {
+                this.generateBomb();
+                this.bombTimer.delay = Phaser.Math.Between(5000,20000);
+            },
+            loop: true
+        });
 
+        // Col·lisió entre la bomba i les plataformes
+        this.physics.add.collider(
+            this.bombs,
+            this.platforms,
+            this.bombHitsGround,
+            null,
+            this
+        );
+
+        // Col·lisió entre la bomba i el jugador
+        this.physics.add.overlap(
+            this.player,
+            this.bombs,
+            this.bombHitsPlayer,
+            null,
+            this
+        );
+
+        // Dificultat progressiva
+        this.time.addEvent({
+            delay: 15000,
+            callback: this.increaseDifficulty,
+            callbackScope: this,
+            loop: true
+        });
+
+        // Tecla per redirigir els jugadors a l'escena de pausa
+        this.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update(){
-        // MOVIMENT JUGADOR
-        this.player.body.setVelocityX(0);
+        // ESCENA PAUSA
+        if(Phaser.Input.Keyboard.JustDown(this.keyEsc)){
+            this.scene.pause();
+            this.scene.launch('EscenaPausa');
+            return;
+        }
 
+        // MOVIMENT JUGADOR 
+        this.player.setVelocityX(0);
+
+        // Comprovem desplaçaments
         if(this.keys.left.isDown){
-            this.player.body.setVelocityX(-this.playerSpeed);
+            this.player.setVelocityX(-this.playerSpeed);
+            this.player.setFlipX(true);
         }
         else if(this.keys.right.isDown){
-            this.player.body.setVelocityX(this.playerSpeed);   
+            this.player.setVelocityX(this.playerSpeed);           
+            this.player.setFlipX(false);
         }
-        else if(this.keys.up.isDown && this.player.body.blocked.down){
-            this.player.body.setVelocityY(-this.jumpForce);
+           
+        // COMPROVEM EL SALT
+        if(Phaser.Input.Keyboard.JustDown(this.keys.up) && this.player.body.blocked.down){
+            this.player.setVelocityY(-this.jumpForce);
+        }
+
+        // ANIMACIONS
+        if(!this.player.body.blocked.down){
+            if(this.player.anims.currentAnim?.key !== 'player_jump'){
+                this.player.play('player_jump', true);
+            }
+        }
+        else if(this.player.body.velocity.x !== 0){
+            if(this.player.anims.currentAnim?.key !== 'player_walk'){
+                this.player.play('player_walk', true);
+            }
+        }
+        else{
+            if(this.player.anims.currentAnim?.key !== 'player_idle'){
+                this.player.play('player_idle', true);
+            }
         }
     }
 
+    // GENERAR PLATAFORMES ALEATÒRIES
+    generateRandomPlatforms(count){
+        for(let i=0;i<count;i++){
+            const x = Phaser.Math.Between(100,900);
+            const y = Phaser.Math.Between(150,700);
+            const width = Phaser.Math.Between(150,400);
+
+            let platform = this.platforms.create(x,y,'platform');
+            platform.setDisplaySize(width,20);
+            platform.refreshBody();
+        }
+
+        // Terra
+        let ground = this.platforms.create(500,750,'platform');
+        ground.setDisplaySize(1000,50);
+        ground.refreshBody();
+    }
+       
     // CREAR ARGUMENTS
     generateArgument(){
-        const x = Phaser.Math.Between(50, 750);
-        let argument = this.add.rectangle(x, 0, 20, 20, 0x00ff00);
-        this.physics.add.existing(argument);
+        const x = Phaser.Math.Between(50,950); // Generem un argument en una posició aleatòria de l'eix X
+
+        // Creem un argument
+        let argument = this.physics.add.image(x,0,'argument');
+        argument.setScale(0.5); // Reduïm la mida de l'argument per fer-lo més visible i manejable
+        argument.body.setVelocityY(this.argumentFallSpeed);
         argument.body.setBounce(0);
-
-        this.arguments.add(argument);
-        this.physics.add.collider(argument, this.platforms);
-        this.time.delayedCall(5000, () =>{
-            if(argument.active){
-                argument.destroy();
-
-                if(this.score > 0){
-                    this.score -= 10;
-                    this.scoreText.setText('Score: ' + this.score);
-                }
-            }
-        });
+        
+        this.arguments.add(argument); // Afegim l'argument al grup d'arguments
     }
 
-    // RECOLLIR ARGUMENT
     collectArgument(player, argument){
+        // Eliminem l'argument del joc
         if(argument.active){
             argument.destroy();
-
-            this.score += 5;
-            this.scoreText.setText('Score: ' + this.score);
         }
+
+        // ACTUALITZEM LA PUNTUACIÓ DEL JUGADOR 
+        this.score += this.argumentPoints; // El jugador rep 5 punts per cada argument recollit
+        this.scoreText.setText("PUNTUACIÓN: " + this.score); // Actualitzem el text de la puntuació que es mostra per pantalla del jugador 
+    }
+
+    argumentHitsGround(argument){
+        if(argument.active){
+            argument.destroy();
+        }
+
+        this.score = Math.max(0,this.score - this.argumentPenalty);
+        this.scoreText.setText("PUNTUACIÓN: " + this.score);
+
+        if(this.score <= 0){
+            this.endGame();
+        }
+    }
+
+    // GENEREM LES BOMBES
+    generateBomb(){
+        const x = Phaser.Math.Between(50,950);
+        let bomb = this.physics.add.image(x,0,'bomb');
+
+        bomb.setScale(0.4);
+        bomb.body.setVelocityY(300);
+        bomb.body.setBounce(0);
+        
+        this.bombs.add(bomb);
+    }
+
+    bombHitsGround(bomb, platform){
+        if(!bomb.active){
+            return;
+        }
+
+        bomb.destroy();
+        this.movePlayerToNewZone(); // Transportem el jugador a una nova zona inferior
+    }
+
+    bombHitsPlayer(player, bomb){
+        bomb.destroy();
+        this.endGame();
+    }
+
+    movePlayerToNewZone(){
+        this.platforms.clear(true,true); // Eliminem les plataformes actuals
+
+        // Creem la nova disposició de plataformes
+        this.generateRandomPlatforms(Phaser.Math.Between(2,5));
+
+        this.player.setPosition(500,100); // Reposicionem el jugador
+    }
+
+    increaseDifficulty(){
+        this.difficultyLevel++;
+
+        this.argumentFallSpeed *= 1.2;
+        this.argumentPenalty = Math.floor(this.argumentPenalty*1.25);
+        this.argumentSpawnDelay = Math.max(300, this.argumentSpawnDelay - 100);
+        this.argumentSpawnTimer.delay = this.argumentSpawnDelay;
+
+        this.bombTimer.delay = Math.max(2000, this.bombTimer.delay - 500);
+    }
+
+    endGame(){
+        this.scene.pause();
+        this.input.keyboard.enabled = false; // Desectivem els controls
+
+        let text = "¡CULPABLE! ¡Que se haga justicia!";
+        
+        // Mostrem text del resultat final
+        this.add.text(
+            this.scale.width / 2,
+            this.scale.height / 2,
+            text, {
+                fontSize: '36px',
+                color: '#fff5d1',
+        }).setOrigin(0.5).setDepth(10);
+
+        this.time.delayedCall(8000, () => {
+            text.destroy(); // Esborrem el text
+            this.scene.stop();
+            this.scene.start("main");
+        });
     }
 }
