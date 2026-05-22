@@ -41,8 +41,8 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.input.keyboard.enabled = true;
 
         // CONSTANTS
-        this.playerSpeed = 200;
-        this.jumpForce = 400;
+        this.playerSpeed = 400;
+        this.jumpForce = 600;
         this.gameOver = false;
 
         // Dificultat
@@ -357,12 +357,12 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
     increaseDifficulty(){
         this.difficultyLevel++;
 
-        this.argumentFallSpeed *= 1.2;
-        this.argumentPenalty = Math.floor(this.argumentPenalty*1.25);
-        this.argumentSpawnDelay = Math.max(300, this.argumentSpawnDelay - 100);
+        this.argumentFallSpeed *= 1.08;
+        this.argumentPenalty = Math.floor(this.argumentPenalty*1.1);
+        this.argumentSpawnDelay = Math.max(700, this.argumentSpawnDelay - 50);
         this.argumentSpawnTimer.delay = this.argumentSpawnDelay;
 
-        this.bombTimer.delay = Math.max(2000, this.bombTimer.delay - 500);
+        this.bombTimer.delay = Math.max(4000, this.bombTimer.delay - 300);
     }
 
     endGame(){
