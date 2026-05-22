@@ -61,7 +61,7 @@ const config = {
     backgroundColor: '#97a3a6',
     scale: {
         mode: Phaser.scale.FIT,
-        autoCenter: Phaser.scale.CENTER_BOTH,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
     },
 
     physics: {
