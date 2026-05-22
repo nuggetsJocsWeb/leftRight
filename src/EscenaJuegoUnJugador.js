@@ -242,14 +242,37 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
 
     // GENERAR PLATAFORMES ALEATÒRIES
     generateRandomPlatforms(count){
-        for(let i=0;i<count;i++){
-            const x = Phaser.Math.Between(100,900);
-            const y = Phaser.Math.Between(150,700);
-            const width = Phaser.Math.Between(150,400);
+        const minY = 120;   // separació vertical mínima
+        const minX = 150;   // separació horitzontal mínima
 
-            let platform = this.platforms.create(x,y,'platform');
-            platform.setDisplaySize(width,20);
+        let placed = [];
+        for(let i = 0; i < count; i++){
+            let x, y, width;
+            let valid = false;
+
+            while(!valid){
+                x = Phaser.Math.Between(100, 900);
+                y = Phaser.Math.Between(150, 700);
+                width = Phaser.Math.Between(150, 400);
+
+                valid = true;
+
+                for(let p of placed){
+                    if(Math.abs(y - p.y) < minY){
+                        valid = false;
+                        break;
+                    }
+                    if(Math.abs(x - p.x) < minX){
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+
+            let platform = this.platforms.create(x, y, 'platform');
+            platform.setDisplaySize(width, 20);
             platform.refreshBody();
+            placed.push({x, y});
         }
 
         // Terra
@@ -290,7 +313,7 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.score = Math.max(0,this.score - this.argumentPenalty);
         this.scoreText.setText("PUNTUACIÓN: " + this.score);
 
-        if(this.score <= 0 && !this.gameOver){
+        if(this.score <= 0){
             this.gameOver = true;
             this.endGame();
         }
