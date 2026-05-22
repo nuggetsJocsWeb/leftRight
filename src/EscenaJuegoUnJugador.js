@@ -50,7 +50,7 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.argumentPenalty = 10;
         this.argumentSpawnDelay = 1000;
 
-        this.argumentPoints = 5; // Punts que rep un jugador per cada argument recollit
+        this.argumentPoints = 30; // Punts que rep un jugador per cada argument recollit
         this.argumentFallSpeed = this.initialFallSpeed; // Velocitat inicial a la que cauen els arguments
 
         // PUNTUACIÓ INICIAL
@@ -314,7 +314,6 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
         this.scoreText.setText("PUNTUACIÓN: " + this.score);
 
         if(this.score <= 0){
-            this.gameOver = true;
             this.endGame();
         }
     }
@@ -357,12 +356,12 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
     increaseDifficulty(){
         this.difficultyLevel++;
 
-        this.argumentFallSpeed *= 1.08;
-        this.argumentPenalty = Math.floor(this.argumentPenalty*1.1);
-        this.argumentSpawnDelay = Math.max(700, this.argumentSpawnDelay - 50);
+        this.argumentFallSpeed *= 1.05;
+        this.argumentPenalty = Math.floor(this.argumentPenalty*1.05);
+        this.argumentSpawnDelay = Math.max(800, this.argumentSpawnDelay - 20);
         this.argumentSpawnTimer.delay = this.argumentSpawnDelay;
 
-        this.bombTimer.delay = Math.max(4000, this.bombTimer.delay - 300);
+        this.bombTimer.delay = Math.max(6000, this.bombTimer.delay - 200);
     }
 
     endGame(){
