@@ -19,8 +19,7 @@ class EscenaMenu extends Phaser.Scene {
 
         const menuHTML = `
             <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem;">
-                <h1 id="mainTitle" style="text-align: center; margin: 0; color: #ffffff;">LEFT&RIGHT MENU</h1>
-                
+                            
                 <div id="contenidorBotons" style="display: flex; gap: 2rem; justify-content: center;">
                     <button class="center" id="play-button">PLAY</button>
                 </div>
