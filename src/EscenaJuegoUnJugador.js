@@ -339,7 +339,7 @@ export default class EscenaJuegoUnJugador extends Phaser.Scene{
     }
 
     endGame(){
-        this.scene.pause();
+        this.physics.pause();
         this.input.keyboard.enabled = false; // Desectivem els controls
 
         let text = "¡CULPABLE! ¡Que se haga justicia!";

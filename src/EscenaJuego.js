@@ -750,7 +750,7 @@ export default class EscenaJuego extends Phaser.Scene {
 
     // FINAL DE LA PARTIDA
     endGame(){
-        this.scene.pause();
+        this.physics.pause();
         this.input.keyboard.enabled = false;
 
         let winnerText = "";
