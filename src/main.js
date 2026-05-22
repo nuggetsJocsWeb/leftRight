@@ -58,10 +58,10 @@ const config = {
     width: 1000,
     height: 800,
     parent: 'game-container',
-    backgroundColor: '#97a3a6',
+    backgroundColor: '#1a475c',
     scale: {
-        mode: Phaser.scale.FIT,
-        autoCenter: Phaser.scale.CENTER_BOTH,
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
     },
 
     physics: {
